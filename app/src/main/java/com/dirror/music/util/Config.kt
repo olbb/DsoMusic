@@ -95,22 +95,20 @@ object Config {
     // 选择的页面
     const val SELECT_FRAGMENT = "int_select_fragment"
 
-
-    /* 用户 vip 类型 */
-    const val VIP_TYPE = "vip_type"
-
     // 是否恢复播放
     const val RESUME_PLAY = "boolean_resume_play"
 
-    // 搜索类型
-    const val SEARCH_TYPE = "search_type"
-
+    /* 用户 vip 类型 */
+    const val VIP_TYPE = "vip_type"
 
     /**
      * Dso 用户
      * [com.dirror.music.manager.DsoUser]
      */
     const val DSO_USER = "dso_user"
+
+    // 搜索类型
+    const val SEARCH_TYPE = "search_type"
 
     //是否自动换源播放
     const val AUTO_CHANGE_RESOURCE = "boolean_auto_change_resource"

@@ -56,11 +56,9 @@ class MyApp : Application() {
 
     companion object {
 
-
-        private const val TAG = "MyApp"
-
         const val UM_APP_KEY = "5fb38e09257f6b73c0961382"
 
+        private const val TAG = "MyApp"
 
         lateinit var mmkv: MMKV
 
