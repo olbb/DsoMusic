@@ -129,4 +129,6 @@
     <string name="menu">菜单</string>
     <string name="resume_play_on_start">Resume Play On Start</string>
     <string name="auto_change_resource">Enable Auto Change Resource</string>
+    <string name="http_cache">Local Playlist Cache</string>
+    <string name="clear_http_cache">Clear Local Playlist Cache</string>
 </resources>
