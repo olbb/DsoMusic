@@ -36,6 +36,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -131,9 +132,11 @@ class PlayerActivity : SlideBackActivity() {
 
     override fun initBinding() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
-        binding.root.setOnApplyWindowInsetsListener { v, insets ->
-            playViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
-            insets
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+                playViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
+                insets
+            }
         }
         setContentView(binding.root)
     }

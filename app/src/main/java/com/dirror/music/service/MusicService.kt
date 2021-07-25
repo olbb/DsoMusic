@@ -40,6 +40,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.MutableLiveData
+import androidx.media.session.MediaButtonReceiver
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.dirror.lyricviewx.LyricEntry
@@ -277,6 +278,7 @@ open class MusicService : BaseMediaService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        MediaButtonReceiver.handleIntent(mediaSession, intent)
         when (intent?.getIntExtra("int_code", 0)) {
             CODE_PREVIOUS -> musicController.playPrevious()
             CODE_PLAY -> {

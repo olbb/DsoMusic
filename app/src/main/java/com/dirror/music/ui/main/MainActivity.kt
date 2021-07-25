@@ -29,6 +29,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -77,10 +78,21 @@ class MainActivity : BaseActivity() {
 
     override fun initBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.root.setOnApplyWindowInsetsListener { _, insets ->
-            mainViewModel.statusBarHeight.value = insets.systemWindowInsetTop
-            mainViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
-            insets
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+                mainViewModel.statusBarHeight.value = insets.systemWindowInsetTop
+                mainViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
+                insets
+            }
+        } else {
+            var statusBarH = 0
+            val resourceId = resources.getIdentifier("status_bar_height",
+                "dimen", "android")
+            if (resourceId > 0) {
+                //根据资源ID获取响应的尺寸值
+                statusBarH = resources.getDimensionPixelSize(resourceId)
+            }
+            mainViewModel.statusBarHeight.value = statusBarH
         }
         miniPlayer = binding.miniPlayer
         setContentView(binding.root)

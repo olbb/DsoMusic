@@ -1,6 +1,7 @@
 package com.dirror.music.ui.playlist
 
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -47,9 +48,11 @@ class SongPlaylistActivity: BaseActivity() {
 
     override fun initBinding() {
         binding = ActivityPlaylistBinding.inflate(layoutInflater)
-        binding.root.setOnApplyWindowInsetsListener { _, insets ->
-            songPlaylistViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
-            insets
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+                songPlaylistViewModel.navigationBarHeight.value = insets.systemWindowInsetBottom
+                insets
+            }
         }
         miniPlayer = binding.miniPlayer
         setContentView(binding.root)
