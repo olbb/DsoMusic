@@ -105,9 +105,13 @@ object Config {
     // 搜索类型
     const val SEARCH_TYPE = "search_type"
 
+
     /**
      * Dso 用户
      * [com.dirror.music.manager.DsoUser]
      */
     const val DSO_USER = "dso_user"
+
+    //是否自动换源播放
+    const val AUTO_CHANGE_RESOURCE = "boolean_auto_change_resource"
 }
