@@ -29,8 +29,8 @@ android {
         applicationId "com.dirror.music"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 741
-        versionName "3.10.0-beta01"
+        versionCode 742
+        versionName "3.10.0-beta02"
 
         multiDexEnabled true
 
@@ -107,6 +107,7 @@ dependencies {
     implementation 'io.coil-kt:coil:1.2.1'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.chrisbanes.photoview:library:1.2.4'
+
 
     //required, enough for most devices.
     implementation 'com.github.olbb.ijk-android:ijkplayer-java:0.8.8'

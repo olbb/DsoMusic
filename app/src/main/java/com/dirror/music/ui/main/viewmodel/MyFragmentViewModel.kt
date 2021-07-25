@@ -2,15 +2,16 @@ package com.dirror.music.ui.main.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dirror.music.MyApp
 import com.dirror.music.api.API_MUSIC_ELEUU
 import com.dirror.music.data.PlaylistData
 import com.dirror.music.data.UserPlaylistData
+import com.dirror.music.manager.User
 import com.dirror.music.util.HttpUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 /**
  * MyFragment 的 ViewModel
@@ -23,7 +24,7 @@ class MyFragmentViewModel : ViewModel() {
     var userPlaylistList = MutableLiveData<ArrayList<PlaylistData>>()
 
     fun updateUserPlaylist() {
-        val uid = MyApp.userManager.getCurrentUid().toString()
+        val uid = User.uid.toString()
         GlobalScope.launch {
             val userPlaylistData = HttpUtils.get(API_MUSIC_ELEUU + "/user/playlist?uid=${uid}", UserPlaylistData::class.java)
             withContext(Dispatchers.Main) {
