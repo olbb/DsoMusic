@@ -15,7 +15,7 @@
     <uses-permission
         android:name="android.permission.MEDIA_CONTENT_CONTROL"
         tools:ignore="ProtectedPermissions" />
-    <uses-sdk tools:overrideLibrary="tv.danmaku.ijk.media.player_arm64"/>
+    <uses-sdk tools:overrideLibrary="tv.danmaku.ijk.media.player_arm64,tv.danmaku.ijk.media.player_x86"/>
 
     <application
         android:name=".MyApp"
@@ -59,7 +59,7 @@
         <activity android:name=".ui.activity.FeedbackActivity" />
         <activity
             android:name=".ui.activity.SearchActivity"
-            android:theme="@style/AppTheme.FullScreen"
+            android:theme="@style/AppTheme.Search"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.CommentActivity"

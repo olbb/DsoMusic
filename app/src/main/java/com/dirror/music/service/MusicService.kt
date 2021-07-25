@@ -416,22 +416,29 @@ open class MusicService : BaseMediaService() {
                                 return@getUrl
                             } else {
                                 Log.d(TAG, "playMusic, url:$it")
-                                setDataSource(it)
+                                if (!recover) {
+                                    setDataSource(it)
+                                    prepareAsync()
+                                }
                             }
+                            recover = false
                         }
                         is Uri -> {
                             try {
-                                setDataSource(applicationContext, it)
+                                if (!recover) {
+                                    setDataSource(applicationContext, it)
+                                    prepareAsync()
+                                }
                             } catch (e: Exception) {
                                 onError(mediaPlayer, -1, 0)
                                 return@getUrl
                             }
+                            recover = false
                         }
                     }
                     setOnPreparedListener(this@MusicController) // 歌曲准备完成的监听
                     setOnCompletionListener(this@MusicController) // 歌曲完成后的回调
                     setOnErrorListener(this@MusicController)
-                    prepareAsync()
                 }
             }
 

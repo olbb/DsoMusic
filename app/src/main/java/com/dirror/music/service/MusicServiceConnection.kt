@@ -34,12 +34,11 @@ class MusicServiceConnection : ServiceConnection {
                 if (recoverSong in recoverPlayQueue) {
                     runOnMainThread {
                         musicController.value?.let {
-                            if (MyApp.mmkv.decodeBool(Config.RESUME_PLAY, false)) {
-                                it.setRecover(true)
-                                it.setRecoverProgress(recoverProgress)
-                                it.setPlaylist(recoverPlayQueue)
-                                it.playMusic(song)
-                            }
+                            val resumePlay = MyApp.mmkv.decodeBool(Config.RESUME_PLAY, false)
+                            it.setRecover(!resumePlay)
+                            it.setRecoverProgress(recoverProgress)
+                            it.setPlaylist(recoverPlayQueue)
+                            it.playMusic(song)
                         }
                     }
                 }

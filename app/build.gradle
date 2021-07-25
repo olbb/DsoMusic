@@ -37,7 +37,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a' // , 'x86' // 'arm64-v8a', 'armeabi-v7a', 'x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86' // , 'x86' // 'arm64-v8a', 'armeabi-v7a', 'x86'
         }
 
     }
@@ -115,7 +115,10 @@ dependencies {
     // Other ABIs:
     // optional
 //    implementation 'com.github.olbb.ijk-android:ijkplayer-armv5:0.8.8'
-//    implementation 'com.github.olbb.ijk-android:ijkplayer-x86:0.8.8'
+    implementation 'com.github.olbb.ijk-android:ijkplayer-x86:0.8.8'
 //    implementation 'com.github.olbb.ijk-android:ijkplayer-x86_64:0.8.8'
+
+    releaseImplementation 'cat.ereza:customactivityoncrash:2.3.0'
+    implementation "com.leinardi.android:speed-dial:3.2.0"
 
 }

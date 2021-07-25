@@ -96,10 +96,13 @@ object Config {
     const val SELECT_FRAGMENT = "int_select_fragment"
 
 
+    /* 用户 vip 类型 */
+    const val VIP_TYPE = "vip_type"
+
     // 是否恢复播放
     const val RESUME_PLAY = "boolean_resume_play"
 
-    /* 用户 vip 类型 */
-    const val VIP_TYPE = "vip_type"
+    // 搜索类型
+    const val SEARCH_TYPE = "search_type"
 
 }
