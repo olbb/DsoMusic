@@ -7,10 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.dirror.music.MyApp
 import com.dirror.music.music.local.MyFavorite
 import com.dirror.music.music.netease.Playlist
-import com.dirror.music.music.netease.PlaylistUtil
 import com.dirror.music.music.standard.data.StandardSongData
+import com.dirror.music.util.Api
 import com.dirror.music.util.runOnMainThread
 import com.dirror.music.util.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val TAG_LOCAL_MY_FAVORITE = 0
 const val TAG_NETEASE = 1
@@ -37,11 +41,18 @@ class SongPlaylistViewModel : ViewModel() {
     fun update(context: Context) {
         when (tag.value) {
             TAG_NETEASE -> {
-                Playlist.getPlaylist(context, playlistId.value?.toLong() ?: 0L, {
-                    setSongList(it)
-                }, {
-
-                })
+                val id = playlistId.value?.toLong()
+                if (id != null) {
+                    GlobalScope.launch {
+                        val list = Api.getPlayListByUID(id)
+                        withContext(Dispatchers.Main) {
+                            if (list.isEmpty()) {
+                                toast("歌单内容获取失败")
+                            }
+                            songList.value = list
+                        }
+                    }
+                }
             }
             TAG_NETEASE_MY_FAVORITE -> {
                 if (MyApp.userManager.getCloudMusicCookie().isEmpty()) {
@@ -65,11 +76,14 @@ class SongPlaylistViewModel : ViewModel() {
     fun updateInfo(context: Context) {
         when (tag.value) {
             TAG_NETEASE, TAG_NETEASE_MY_FAVORITE -> {
-                PlaylistUtil.getPlaylistInfo(context, playlistId.value?.toLong() ?: 0L) {
-                    runOnMainThread {
-                        playlistUrl.value = it.coverImgUrl ?: ""
-                        playlistTitle.value = it.name ?: ""
-                        playlistDescription.value = it.description ?: ""
+                GlobalScope.launch {
+                    val info = Api.getPlayListInfo(playlistId.value?.toLong() ?: 0L)
+                    if (info != null) {
+                        withContext(Dispatchers.Main) {
+                            playlistUrl.value = info.coverImgUrl ?: ""
+                            playlistTitle.value = info.name ?: ""
+                            playlistDescription.value = info.description ?: ""
+                        }
                     }
                 }
             }
