@@ -94,4 +94,7 @@ object Config {
 
     // 选择的页面
     const val SELECT_FRAGMENT = "int_select_fragment"
+
+    // 是否恢复播放
+    const val RESUME_PLAY = "boolean_resume_play"
 }

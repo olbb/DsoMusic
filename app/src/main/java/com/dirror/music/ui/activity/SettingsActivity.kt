@@ -69,6 +69,7 @@ class SettingsActivity : BaseActivity() {
             switcherSingleColumnPlaylist.setChecked(mmkv.decodeBool(Config.SINGLE_COLUMN_USER_PLAYLIST, false))
             switcherStatusBarLyric.setChecked(mmkv.decodeBool(Config.MEIZU_STATUS_BAR_LYRIC, true))
             switcherInkScreenMode.setChecked(mmkv.decodeBool(Config.INK_SCREEN_MODE, false))
+            switcherResumePlayOnStart.setChecked(mmkv.decodeBool(Config.RESUME_PLAY, false))
         }
 
     }
@@ -148,6 +149,8 @@ class SettingsActivity : BaseActivity() {
             itemNeteaseCloudMusicApi.setOnClickListener {
                 startActivity(Intent(this@SettingsActivity, NeteaseCloudMusicApiActivity::class.java))
             }
+
+            switcherResumePlayOnStart.setOnCheckedChangeListener {  mmkv.encode(Config.RESUME_PLAY, it) }
         }
     }
 
