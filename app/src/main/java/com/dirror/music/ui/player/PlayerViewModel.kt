@@ -39,12 +39,12 @@ class PlayerViewModel: ViewModel() {
         it.value = MyApp.musicController.value?.getPlayMode() ?: BaseMediaService.MODE_CIRCLE
     }
 
-    var duration = MutableLiveData<Int>().also {
+    var duration = MutableLiveData<Long>().also {
         it.value = MyApp.musicController.value?.getDuration() ?: 0
     }
 
-    var progress = MutableLiveData<Int>().also {
-        it.value = MyApp.musicController.value?.getProgress() ?: 0
+    var progress = MutableLiveData<Long>().also {
+        it.value = MyApp.musicController.value?.getProgress() ?:0
     }
 
     var lyricTranslation = MutableLiveData<Boolean>().also {

@@ -494,13 +494,13 @@ class PlayerActivity : SlideBackActivity() {
             })
             // 总时长的观察
             duration.observe(this@PlayerActivity, {
-                binding.seekBar.max = it
-                binding.ttvDuration.setText(it)
+                binding.seekBar.max = it.toInt()
+                binding.ttvDuration.setText(it.toInt())
             })
             // 进度的观察
             progress.observe(this@PlayerActivity, {
-                binding.seekBar.progress = it
-                binding.ttvProgress.setText(it)
+                binding.seekBar.progress = it.toInt()
+                binding.ttvProgress.setText(it.toInt())
                 handler.sendEmptyMessageDelayed(MSG_PROGRESS, DELAY_MILLIS)
                 // 更新歌词播放进度
                 binding.lyricView.updateTime(it.toLong())

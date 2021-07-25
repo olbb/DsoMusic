@@ -42,12 +42,12 @@ interface MusicControllerInterface {
     /**
      * 获取当前歌曲时长
      */
-    fun getDuration(): Int
+    fun getDuration(): Long
 
     /**
      * 获取当前播放进度
      */
-    fun getProgress(): Int
+    fun getProgress(): Long
 
     /**
      * 设置播放进度

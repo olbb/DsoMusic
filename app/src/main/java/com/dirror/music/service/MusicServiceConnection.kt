@@ -20,7 +20,10 @@ class MusicServiceConnection : ServiceConnection {
      * 服务连接后
      */
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-        musicController.value = p1 as MusicService.MusicController
+        if (p1 !is MusicService.MusicController) {
+            return
+        }
+        musicController.value = p1
         thread {
             // 恢复 SongData
             val recoverSong = MyApp.mmkv.decodeParcelable(Config.SERVICE_CURRENT_SONG, StandardSongData::class.java)

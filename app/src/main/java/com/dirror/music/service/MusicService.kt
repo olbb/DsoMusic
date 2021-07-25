@@ -59,6 +59,8 @@ import com.dirror.music.util.extensions.*
 import com.dso.ext.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import tv.danmaku.ijk.media.player.IMediaPlayer
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -257,7 +259,7 @@ open class MusicService : BaseMediaService() {
 
             override fun onSeekTo(pos: Long) {
                 if (musicController.isPrepared) {
-                    musicController.mediaPlayer.seekTo(pos.toInt())
+                    musicController.mediaPlayer.seekTo(pos)
                     updateMediaSession()
                 }
             }
@@ -320,11 +322,11 @@ open class MusicService : BaseMediaService() {
     /**
      * inner class Music Controller
      */
-    inner class MusicController : Binder(), MusicControllerInterface, MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+    inner class MusicController : Binder(), MusicControllerInterface, IMediaPlayer.OnPreparedListener,
+        IMediaPlayer.OnCompletionListener, IMediaPlayer.OnErrorListener {
 
         /** MediaPlayer */
-        val mediaPlayer: MediaPlayer = MediaPlayer()
+        val mediaPlayer: IjkMediaPlayer = IjkMediaPlayer()
 
         /* 是否开启了状态栏歌词 */
         var statusBarLyric = mmkv.decodeBool(Config.MEIZU_STATUS_BAR_LYRIC, true)
@@ -408,6 +410,7 @@ open class MusicService : BaseMediaService() {
                                 toast("移动网络下已禁止播放，请在设置中打开选项（注意流量哦）")
                                 return@getUrl
                             } else {
+                                Log.d(TAG, "playMusic, url:$it")
                                 setDataSource(it)
                             }
                         }
@@ -436,7 +439,7 @@ open class MusicService : BaseMediaService() {
             sendBroadcast(intent)
         }
 
-        override fun onPrepared(p0: MediaPlayer?) {
+        override fun onPrepared(p0: IMediaPlayer?) {
             Log.i(TAG, "onPrepared")
             isPrepared = true
             this.play()
@@ -593,13 +596,13 @@ open class MusicService : BaseMediaService() {
 
         override fun isPlaying(): MutableLiveData<Boolean> = isSongPlaying
 
-        override fun getDuration(): Int = if (isPrepared) {
+        override fun getDuration(): Long = if (isPrepared) {
             mediaPlayer.duration
         } else {
             0
         }
 
-        override fun getProgress(): Int = if (isPrepared) {
+        override fun getProgress(): Long = if (isPrepared) {
             mediaPlayer.currentPosition
         } else {
             0
@@ -706,10 +709,11 @@ open class MusicService : BaseMediaService() {
                 mediaPlayer.let {
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            val playbackParams = it.playbackParams
-                            // playbackParams.speed = speed // 0 表示暂停
-                            playbackParams.pitch = pitch
-                            it.playbackParams = playbackParams
+                            //ijk not has such params yet
+                            //val playbackParams = it.playbackParams
+                            // // playbackParams.speed = speed // 0 表示暂停
+                            //playbackParams.pitch = pitch
+                            //it.playbackParams = playbackParams
                         }
                     } catch (e: Exception) {
 
@@ -718,7 +722,7 @@ open class MusicService : BaseMediaService() {
             }
         }
 
-        override fun onCompletion(p0: MediaPlayer?) {
+        override fun onCompletion(p0: IMediaPlayer?) {
             autoPlayNext()
         }
 
@@ -731,7 +735,7 @@ open class MusicService : BaseMediaService() {
             playNext()
         }
 
-        override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+        override fun onError(p0: IMediaPlayer?, p1: Int, p2: Int): Boolean {
             if (mmkv.decodeBool(Config.SKIP_ERROR_MUSIC, true)) {
                 // 播放下一首
                 // toast("播放错误 (${p1},${p2}) ，开始播放下一首")
