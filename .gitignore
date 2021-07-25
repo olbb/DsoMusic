@@ -12,6 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+.idea
 
 app/src/main/java/com/dirror/music/widget/lyricBackground/LyricsBackgroundView.java
 app/libs/
