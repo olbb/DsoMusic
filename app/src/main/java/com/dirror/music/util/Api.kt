@@ -2,10 +2,12 @@ package com.dirror.music.util
 
 import android.util.Log
 import com.dirror.music.api.API_NEW
+import com.dirror.music.api.CloudMusicApi
 import com.dirror.music.data.*
 import com.dirror.music.music.compat.CompatSearchData
 import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
 import com.dirror.music.music.netease.Playlist
+import com.dirror.music.music.netease.data.LyricData
 import com.dirror.music.music.qq.SearchSong
 import com.dirror.music.music.standard.data.StandardAlbumPackage
 import com.dirror.music.music.standard.data.StandardSearchResult
@@ -185,6 +187,10 @@ object Api {
             }
         }
         return null
+    }
+
+    suspend fun getLyricUrl(id : String) : LyricData? {
+        return HttpUtils.get("${CloudMusicApi.LYRIC}?id=$id", LyricData::class.java)
     }
 
 }

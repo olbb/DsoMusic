@@ -112,4 +112,10 @@ object Config {
 
     //是否自动换源播放
     const val AUTO_CHANGE_RESOURCE = "boolean_auto_change_resource"
+
+    //是否开机后自动启动
+    const val AUTO_START_ON_BOOT_UP = "boolean_auto_start_on_boot_up"
+
+    //是否悬浮显示播放信息
+    const val FLOAT_PLAY_INFO = "boolean_show_float_play_info"
 }

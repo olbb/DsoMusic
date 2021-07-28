@@ -56,6 +56,7 @@ import com.dirror.music.service.base.BaseMediaService
 import com.dirror.music.ui.main.MainActivity
 import com.dirror.music.ui.player.PlayerActivity
 import com.dirror.music.util.*
+import com.dirror.music.widget.FloatWidgetHelper
 import com.dso.ext.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -927,16 +928,17 @@ open class MusicService : BaseMediaService() {
                         song?.artists?.parse() // + " - " + song?.album
                     )
                     // 通过刷新通知方法更新（魅族等系统通过 MediaSession 更新专辑封面无效）
-//                    .putBitmap(
-//                        MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-//                        musicController.getPlayerCover().value
-//                    )
+                    .putBitmap(
+                        MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+                        musicController.getPlayerCover().value
+                    )
                     .putLong(
                         MediaMetadata.METADATA_KEY_DURATION,
                         musicController.getDuration().toLong()
                     )
                     .build()
             )
+            song?.let { FloatWidgetHelper.setPlayInfo(song) }
         }
 
     }

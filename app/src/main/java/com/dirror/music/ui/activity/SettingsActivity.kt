@@ -12,6 +12,7 @@ import com.dirror.music.ui.live.NeteaseCloudMusicApiActivity
 import com.dirror.music.util.*
 import com.dirror.music.util.cache.ACache
 import com.dirror.music.util.cache.CommonCacheInterceptor
+import com.dirror.music.widget.FloatWidgetHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -78,6 +79,8 @@ class SettingsActivity : BaseActivity() {
             switcherInkScreenMode.setChecked(mmkv.decodeBool(Config.INK_SCREEN_MODE, false))
             switcherResumePlayOnStart.setChecked(mmkv.decodeBool(Config.RESUME_PLAY, false))
             switcherAutoChangeResource.setChecked(mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE, false))
+            switchStartOnBootUp.setChecked(mmkv.decodeBool(Config.AUTO_START_ON_BOOT_UP, false))
+            switcherShowFloatWidget.setChecked(mmkv.decodeBool(Config.FLOAT_PLAY_INFO), false)
         }
 
     }
@@ -171,6 +174,13 @@ class SettingsActivity : BaseActivity() {
             switcherResumePlayOnStart.setOnCheckedChangeListener {  mmkv.encode(Config.RESUME_PLAY, it) }
 
             switcherAutoChangeResource.setOnCheckedChangeListener { mmkv.encode(Config.AUTO_CHANGE_RESOURCE, it) }
+
+            switchStartOnBootUp.setOnCheckedChangeListener { mmkv.encode(Config.AUTO_START_ON_BOOT_UP, it) }
+
+            switcherShowFloatWidget.setOnCheckedChangeListener {
+                mmkv.encode(Config.FLOAT_PLAY_INFO, it)
+                FloatWidgetHelper.initWidget()
+            }
         }
     }
 

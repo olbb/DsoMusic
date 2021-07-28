@@ -39,6 +39,7 @@ import com.dirror.music.room.AppDatabase
 import com.dirror.music.service.MusicService
 import com.dirror.music.service.MusicServiceConnection
 import com.dirror.music.util.*
+import com.dirror.music.widget.FloatWidgetHelper
 import com.tencent.mmkv.MMKV
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
@@ -120,6 +121,8 @@ class MyApp : Application() {
                 realIP = ip
             }
         }
+        FloatWidgetHelper.initWidget()
+        Log.i(TAG, "onCreate finished")
     }
 
     /**

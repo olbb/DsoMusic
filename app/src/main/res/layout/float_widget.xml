@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="400dp"
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/float_widget_bg"
+    android:translationZ="5dp">
+
+    <com.dirror.music.widget.AlwaysFocusTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:textColor="#fface9f1"
+        tools:text="test" />
+
+    <com.dirror.music.widget.AlwaysFocusTextView
+        android:id="@+id/singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:textSize="22sp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        tools:text="test"
+        android:textColor="#bbace9f1"
+        android:gravity="center"/>
+
+    <me.qinc.lib.edgetranslucent.EdgeTransparentView
+        android:id="@+id/edgeTransparentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:edge_position="top|bottom"
+        app:edge_width="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.dirror.lyricviewx.LyricViewX
+            android:id="@+id/lyricView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lrcCurrentTextColor="#ff1fb4fc"
+            app:lrcNormalTextColor="#881fb4fc"
+            app:lrcTextSize="25sp"
+            app:lrcNormalTextSize="18sp"
+            app:lrcPadding="0dp">
+
+        </com.dirror.lyricviewx.LyricViewX>
+
+    </me.qinc.lib.edgetranslucent.EdgeTransparentView>
+
+</LinearLayout>

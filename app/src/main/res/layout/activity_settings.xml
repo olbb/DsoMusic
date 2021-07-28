@@ -166,6 +166,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:itemType="item_no"
+                app:text="开机后启动音乐服务">
+
+                <com.bitvale.switcher.SwitcherX
+                    android:id="@+id/switch_start_on_boot_up"
+                    style="@style/switcher"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.dirror.music.widget.ItemLayout>
+
+            <com.dirror.music.widget.ItemLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:itemType="item_no"
+                app:text="后台时显示悬浮控件">
+
+                <com.bitvale.switcher.SwitcherX
+                    android:id="@+id/switcher_show_float_widget"
+                    style="@style/switcher"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.dirror.music.widget.ItemLayout>
+
+            <com.dirror.music.widget.ItemLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:itemType="item_no"
                 app:text="@string/auto_change_resource">
 
                 <com.bitvale.switcher.SwitcherX
