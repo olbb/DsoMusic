@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="400dp"
-    android:layout_height="250dp"
+    android:layout_width="500dp"
+    android:layout_height="300dp"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/float_widget_bg"
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
-        android:textSize="30sp"
+        android:textSize="40sp"
         android:gravity="center"
         android:singleLine="true"
         android:layout_marginLeft="10dp"
@@ -30,7 +30,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:textSize="22sp"
+        android:textSize="30sp"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
@@ -55,8 +55,8 @@
             android:layout_height="match_parent"
             app:lrcCurrentTextColor="#ff1fb4fc"
             app:lrcNormalTextColor="#881fb4fc"
-            app:lrcTextSize="25sp"
-            app:lrcNormalTextSize="18sp"
+            app:lrcTextSize="40sp"
+            app:lrcNormalTextSize="30sp"
             app:lrcPadding="0dp">
 
         </com.dirror.lyricviewx.LyricViewX>

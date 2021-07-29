@@ -131,4 +131,6 @@
     <string name="auto_change_resource">Enable Auto Change Resource</string>
     <string name="http_cache">Local Playlist Cache</string>
     <string name="clear_http_cache">Clear Local Playlist Cache</string>
+    <string name="view_more_songs_by_singer">View more songs by the artist</string>
+    <string name="search_playlist_include_song">Search playlist include the song</string>
 </resources>

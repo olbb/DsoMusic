@@ -9,10 +9,7 @@ import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
 import com.dirror.music.music.netease.Playlist
 import com.dirror.music.music.netease.data.LyricData
 import com.dirror.music.music.qq.SearchSong
-import com.dirror.music.music.standard.data.StandardAlbumPackage
-import com.dirror.music.music.standard.data.StandardSearchResult
-import com.dirror.music.music.standard.data.StandardSingerPackage
-import com.dirror.music.music.standard.data.StandardSongData
+import com.dirror.music.music.standard.data.*
 import com.dso.ext.averageAssignFixLength
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -179,7 +176,6 @@ object Api {
             )
             string = string.replace("\'", "\"")
             string = string.replace("&nbsp;", " ")
-            println("search from kuwo result:$string")
             try {
                 return  Gson().fromJson(string, com.dirror.music.music.kuwo.SearchSong.KuwoSearchData::class.java)
             } catch (e: JsonSyntaxException) {
@@ -191,6 +187,11 @@ object Api {
 
     suspend fun getLyricUrl(id : String) : LyricData? {
         return HttpUtils.get("${CloudMusicApi.LYRIC}?id=$id", LyricData::class.java)
+    }
+
+    suspend fun getPlayListBySongId(id : String) : List<StandardPlaylist>? {
+        val r = HttpUtils.get("$API_NEW/simi/playlist?id=$id", NeteaseSimaPlaylistResult::class.java)
+        return r?.switchToStandardPlaylist()
     }
 
 }

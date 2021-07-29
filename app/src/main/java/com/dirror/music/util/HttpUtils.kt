@@ -1,6 +1,7 @@
 package com.dirror.music.util
 
 import android.util.Log
+import com.dirror.music.BuildConfig
 import com.dirror.music.MyApp
 import com.dirror.music.util.cache.CommonCacheInterceptor
 import com.google.gson.Gson
@@ -66,7 +67,9 @@ object HttpUtils {
         } catch (e: Exception) {
             Log.w(TAG, "get failed:${e} ,url:$realUrl")
             e.printStackTrace()
-            toast(e.getString())
+            if (BuildConfig.DEBUG) {
+                toast(e.getString())
+            }
         }
         Log.d(TAG, "post $realUrl finished, cost: ${System.currentTimeMillis() - time} ms , isCache:${iscache}")
         return@withContext result

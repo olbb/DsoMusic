@@ -96,6 +96,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".ui.activity.MorePlayListActivity"
+            android:theme="@style/AppTheme.FullScreen"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

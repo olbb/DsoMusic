@@ -30,6 +30,20 @@
             android:layout_height="56dp" />
 
         <com.dirror.music.widget.ItemLayout
+            android:id="@+id/itemViewSingerMoreSong"
+            app:text="@string/view_more_songs_by_singer"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:visibility="gone"/>
+
+        <com.dirror.music.widget.ItemLayout
+            android:id="@+id/itemSearchPlayList"
+            app:text="@string/search_playlist_include_song"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:visibility="visible"/>
+
+        <com.dirror.music.widget.ItemLayout
             android:id="@+id/itemAddNeteaseFavorite"
             app:text="@string/add_to_netease_favorite"
             android:layout_width="match_parent"

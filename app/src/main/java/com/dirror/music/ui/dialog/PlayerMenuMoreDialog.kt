@@ -2,14 +2,19 @@ package com.dirror.music.ui.dialog
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.dirror.music.MyApp
+import com.dirror.music.data.SearchType
 import com.dirror.music.databinding.DialogPlayMoreBinding
 import com.dirror.music.manager.User
 import com.dirror.music.music.standard.data.SOURCE_NETEASE
 import com.dirror.music.music.standard.data.SOURCE_QQ
 import com.dirror.music.music.standard.data.StandardSongData
+import com.dirror.music.ui.activity.MorePlayListActivity
 import com.dirror.music.ui.activity.PlayHistoryActivity
 import com.dirror.music.ui.base.BaseBottomSheetDialog
+import com.dirror.music.ui.playlist.SongPlaylistActivity
+import com.dirror.music.ui.playlist.TAG_NETEASE
 import com.dirror.music.util.toast
 
 class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
@@ -74,6 +79,26 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
             timeClose.setOnClickListener {
                 dismiss()
                 TimingOffDialog(context).show()
+            }
+            MyApp.musicController.value?.getPlayingSongData()?.value?.let {
+//                itemSearchPlayList.visibility = if (it.source == SOURCE_NETEASE) View.VISIBLE else View.GONE
+                itemViewSingerMoreSong.visibility = if (it.source == SOURCE_NETEASE &&
+                        it.artists?.size == 1) View.VISIBLE else View.GONE
+                itemViewSingerMoreSong.setOnClickListener{ view ->
+                    it.artists?.first()?.let { singer ->
+                        val intent = Intent(view.context, SongPlaylistActivity::class.java)
+                        intent.putExtra(SongPlaylistActivity.EXTRA_TAG, TAG_NETEASE)
+                        intent.putExtra(SongPlaylistActivity.EXTRA_ID, singer.artistId.toString())
+                        intent.putExtra(SongPlaylistActivity.EXTRA_TYPE, SearchType.SINGER)
+                        view.context.startActivity(intent)
+                    }
+                }
+                itemSearchPlayList.setOnClickListener { view ->
+                    val intent = Intent(view.context, MorePlayListActivity::class.java)
+//                    intent.putExtra(MorePlayListActivity.EXTRA_SONG_ID, it.id)
+                    intent.putExtra(MorePlayListActivity.EXTRA_SONG_NAME, it.name)
+                    view.context.startActivity(intent)
+                }
             }
         }
     }

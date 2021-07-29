@@ -131,4 +131,6 @@
     <string name="auto_change_resource">自动换源播放</string>
     <string name="http_cache">本地歌单缓存</string>
     <string name="clear_http_cache">清除本地歌单缓存</string>
+    <string name="view_more_songs_by_singer">歌手的其它歌曲</string>
+    <string name="search_playlist_include_song">包含这首歌的歌单</string>
 </resources>
