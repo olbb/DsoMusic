@@ -58,8 +58,10 @@ import com.dirror.music.ui.player.PlayerActivity
 import com.dirror.music.util.*
 import com.dirror.music.widget.FloatWidgetHelper
 import com.dso.ext.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.util.*
@@ -400,7 +402,7 @@ open class MusicService : BaseMediaService() {
             mediaPlayer.reset()
             // 初始化
             mediaPlayer.apply {
-                ServiceSongUrl.getUrl(song) {
+                ServiceSongUrl.getUrlProxy(song) {
                     when (it) {
                         is String -> {
                             if (!InternetState.isWifi(MyApp.context) && !mmkv.decodeBool(
@@ -409,7 +411,7 @@ open class MusicService : BaseMediaService() {
                                 )
                             ) {
                                 toast("移动网络下已禁止播放，请在设置中打开选项（注意流量哦）")
-                                return@getUrl
+                                return@getUrlProxy
                             } else {
                                 if (!recover) {
                                     setDataSource(it)
@@ -426,7 +428,7 @@ open class MusicService : BaseMediaService() {
                                 }
                             } catch (e: Exception) {
                                 onError(mediaPlayer, -1, 0)
-                                return@getUrl
+                                return@getUrlProxy
                             }
                             recover = false
                         }

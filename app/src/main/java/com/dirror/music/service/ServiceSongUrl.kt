@@ -11,13 +11,24 @@ import com.dirror.music.music.qq.PlayUrl
 import com.dirror.music.music.standard.SearchLyric
 import com.dirror.music.music.standard.data.*
 import com.dirror.music.util.runOnMainThread
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 获取歌曲 URL
  */
 object ServiceSongUrl {
+
+    inline fun getUrlProxy(song: StandardSongData, crossinline success: (Any?) -> Unit) {
+        getUrl(song) {
+            GlobalScope.launch { withContext(Dispatchers.Main) {
+                success.invoke(it)
+            } }
+
+        }
+    }
 
     inline fun getUrl(song: StandardSongData, crossinline success: (Any?) -> Unit) {
         when (song.source) {
