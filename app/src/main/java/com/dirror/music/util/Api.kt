@@ -189,9 +189,4 @@ object Api {
         return HttpUtils.get("${CloudMusicApi.LYRIC}?id=$id", LyricData::class.java)
     }
 
-    suspend fun getPlayListBySongId(id : String) : List<StandardPlaylist>? {
-        val r = HttpUtils.get("$API_NEW/simi/playlist?id=$id", NeteaseSimaPlaylistResult::class.java)
-        return r?.switchToStandardPlaylist()
-    }
-
 }
