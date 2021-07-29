@@ -29,6 +29,7 @@ data class StandardSongData(
     val dirrorInfo: DirrorInfo?
 ) : Parcelable {
 
+    @Ignore
     constructor() : this(SOURCE_NETEASE,
     null, null, null, null, null, null, null)
 
