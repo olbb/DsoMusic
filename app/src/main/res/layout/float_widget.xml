@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="500dp"
-    android:layout_height="300dp"
+    android:layout_width="400dp"
+    android:layout_height="250dp"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/float_widget_bg"
@@ -27,7 +27,7 @@
         android:id="@+id/singer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="3dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:textSize="30sp"
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:edge_position="top|bottom"
-        app:edge_width="56dp"
+        app:edge_width="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +55,8 @@
             android:layout_height="match_parent"
             app:lrcCurrentTextColor="#ff1fb4fc"
             app:lrcNormalTextColor="#881fb4fc"
-            app:lrcTextSize="40sp"
-            app:lrcNormalTextSize="30sp"
+            app:lrcTextSize="35sp"
+            app:lrcNormalTextSize="25sp"
             app:lrcPadding="0dp">
 
         </com.dirror.lyricviewx.LyricViewX>
