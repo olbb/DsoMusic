@@ -15,7 +15,12 @@ import com.dirror.music.ui.activity.PlayHistoryActivity
 import com.dirror.music.ui.base.BaseBottomSheetDialog
 import com.dirror.music.ui.playlist.SongPlaylistActivity
 import com.dirror.music.ui.playlist.TAG_NETEASE
+import com.dirror.music.util.Api
 import com.dirror.music.util.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
 
@@ -46,15 +51,21 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
                     song?.let {
                         when (it.source) {
                             SOURCE_NETEASE -> {
-                                MyApp.cloudMusicManager.likeSong(it.id?:"", {
-                                    toast("添加到我喜欢成功")
-                                    dismiss()
-                                }, {
-                                    toast("添加到我喜欢失败")
-                                    dismiss()
-                                })
+                                GlobalScope.launch {
+                                    Api.likeSong(true, it.id ?: "").let { codeData ->
+                                        withContext(Dispatchers.Main) {
+                                            if (codeData?.code == 200) {
+                                                toast("添加到我喜欢成功")
+                                            } else {
+                                                toast("添加到我喜欢失败")
+                                            }
+                                            dismiss()
+                                        }
+                                    }
+                                }
                             }
-                            SOURCE_QQ -> {
+
+                            else -> {
                                 toast("暂不支持此音源")
                                 dismiss()
                             }

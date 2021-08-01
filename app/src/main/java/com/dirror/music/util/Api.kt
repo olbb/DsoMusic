@@ -9,6 +9,7 @@ import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
 import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
 import com.dirror.music.music.netease.Playlist
+import com.dirror.music.music.netease.data.CodeData
 import com.dirror.music.music.netease.data.LyricData
 import com.dirror.music.music.qq.SearchSong
 import com.dirror.music.music.standard.data.*
@@ -27,8 +28,13 @@ object Api {
     private const val CHEATING_CODE = -460 // Cheating 错误
 
     suspend fun getPlayListInfo(id: Long): DetailPlaylistInnerData? {
-        val url = "$API_NEW/playlist/detail?id=${id}"
-        return HttpUtils.get(url, DetailPlaylistData::class.java, true)?.playlist
+        val params = HashMap<String, String>()
+        params["id"] = id.toString()
+        if (User.hasCookie) {
+            params["cookie"] = User.cookie
+        }
+        val url = "$API_NEW/playlist/detail?id=${id}&hash=${params.hashCode()}"
+        return HttpUtils.post(url, params, DetailPlaylistData::class.java)?.playlist
     }
 
     suspend fun getPlayList(id: Long, useCache: Boolean): PackedSongList {
@@ -212,7 +218,17 @@ object Api {
     }
 
     suspend fun getUserInfo(cookie: String): NeteaseUserInfo? {
-        return HttpUtils.post("$API_LOGIN/user/account", Utils.toMap("cookie", cookie) , NeteaseUserInfo::class.java)
+        return HttpUtils.post("$API_LOGIN/user/account?timestamp=${Date().time}", Utils.toMap("cookie", cookie) , NeteaseUserInfo::class.java)
+    }
+
+    suspend fun likeSong(like: Boolean, id: String): CodeData? {
+        val params = Utils.toMap("id", id, "cookie", User.cookie, "like", like.toString())
+        return HttpUtils.post("$API_LOGIN/like?timestamp=${Date().time}", params, CodeData::class.java)
+    }
+
+    suspend fun subscribePlaylist(like: Boolean, id: String) : CodeData? {
+        val params = Utils.toMap("id", id, "cookie", User.cookie, "t", if (like) "1" else "2")
+        return HttpUtils.post("$API_LOGIN/playlist/subscribe?timestamp=${Date().time}", params, CodeData::class.java)
     }
 
 }

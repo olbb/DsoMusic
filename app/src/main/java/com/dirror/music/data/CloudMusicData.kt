@@ -48,6 +48,7 @@ data class DetailPlaylistInnerData(
     @SerializedName("coverImgUrl") val coverImgUrl: String?, // 歌单图片
     @SerializedName("name") val name: String?, // 歌单名字
     @SerializedName("description") val description: String?, // 描述
+    @SerializedName("subscribed") val subscribed: Boolean?//是否已收藏
 )
 
 @Keep

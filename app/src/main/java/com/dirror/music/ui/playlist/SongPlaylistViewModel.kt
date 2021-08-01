@@ -43,6 +43,8 @@ class SongPlaylistViewModel : ViewModel() {
 
     var type = MutableLiveData(SearchType.PLAYLIST)
 
+    var subscribed = MutableLiveData<Boolean?>()
+
     fun update() {
         when (tag.value) {
             TAG_NETEASE -> {
@@ -105,7 +107,7 @@ class SongPlaylistViewModel : ViewModel() {
             return
         }
         when (tag.value) {
-            TAG_NETEASE, TAG_NETEASE_MY_FAVORITE -> {
+            TAG_NETEASE -> {
                 GlobalScope.launch {
                     val info = Api.getPlayListInfo(playlistId.value?.toLong() ?: 0L)
                     if (info != null) {
@@ -113,9 +115,14 @@ class SongPlaylistViewModel : ViewModel() {
                             playlistUrl.value = info.coverImgUrl ?: ""
                             playlistTitle.value = info.name ?: ""
                             playlistDescription.value = info.description ?: ""
+                            subscribed.value = info.subscribed
                         }
                     }
                 }
+            }
+            TAG_NETEASE_MY_FAVORITE -> {
+                playlistTitle.value = "我喜欢"
+                playlistDescription.value = "网易云我喜欢的歌曲"
             }
             TAG_LOCAL_MY_FAVORITE -> {
                 playlistTitle.value = "本地我喜欢"
@@ -144,9 +151,12 @@ class SongPlaylistViewModel : ViewModel() {
                     }
                     songList.value = packed.songs
                     Log.d(TAG, "getPlaylist finished, isCache:${packed.isCache}, size:${packed.songs.size}")
-                    if (useCache && packed.isCache) {
-                        getPlaylist(id, false)
+                    if (tag.value == TAG_NETEASE_MY_FAVORITE) {
+                        playlistUrl.value = packed.songs.first().imageUrl ?: ""
                     }
+                }
+                if (useCache && packed.isCache) {
+                    getPlaylist(id, false)
                 }
             }
         }
