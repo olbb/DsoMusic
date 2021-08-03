@@ -2,6 +2,7 @@ package com.dirror.music.ui.playlist
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -140,7 +141,8 @@ class SongPlaylistActivity: BaseActivity() {
     }
 
     override fun initObserver() {
-        binding.rvPlaylist.layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this)
+        binding.rvPlaylist.layoutManager = layoutManager
         binding.rvPlaylist.adapter = adapter
         songPlaylistViewModel.apply {
             songList.observe(this@SongPlaylistActivity, {
@@ -149,9 +151,15 @@ class SongPlaylistActivity: BaseActivity() {
                     binding.lottieLoading.pauseAnimation()
                  }
                 binding.tvPlayAll.text = getString(R.string.play_all, it.size)
+                val sizeChange = adapter.itemCount != it.size
+                val pos = layoutManager.findFirstVisibleItemPosition()
+                val top = layoutManager.getChildAt(0)?.top?.apply { this - binding.rvPlaylist.paddingTop }  ?: 0
                 adapter.submitList(it)
                 if (songPlaylistViewModel.tag.value == TAG_LOCAL_MY_FAVORITE) {
                     songPlaylistViewModel.updateInfo()
+                }
+                if (sizeChange && pos >= 0) {//keep scroll pos
+                    binding.rvPlaylist.post { layoutManager.scrollToPositionWithOffset(pos, top) }
                 }
             })
             playlistTitle.observe(this@SongPlaylistActivity, {
