@@ -115,7 +115,7 @@ object HttpUtils {
 
             val response = client.newCall(request).execute()
             str = response.body()?.string()
-            if (response.code() != 200 || true) {
+            if (response.code() != 200) {
                 Log.d(TAG, "post $url , params:${params}, response:$str")
             }
             result = gson.fromJson(str, clazz)

@@ -151,7 +151,7 @@ class SongPlaylistViewModel : ViewModel() {
                     }
                     songList.value = packed.songs
                     Log.d(TAG, "getPlaylist finished, isCache:${packed.isCache}, size:${packed.songs.size}")
-                    if (tag.value == TAG_NETEASE_MY_FAVORITE) {
+                    if (tag.value == TAG_NETEASE_MY_FAVORITE && packed.songs.isNotEmpty()) {
                         playlistUrl.value = packed.songs.first().imageUrl ?: ""
                     }
                 }

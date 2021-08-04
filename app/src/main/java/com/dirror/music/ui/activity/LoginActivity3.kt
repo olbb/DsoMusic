@@ -6,9 +6,11 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dirror.music.MyApp
 import com.dirror.music.databinding.ActivityLogin3Binding
+import com.dirror.music.manager.User
 import com.dirror.music.ui.base.BaseActivity
 import com.dirror.music.util.Config
 import com.dirror.music.util.getStatusBarHeight
+import com.dirror.music.util.toast
 
 /**
  * 预计 2.0 版
