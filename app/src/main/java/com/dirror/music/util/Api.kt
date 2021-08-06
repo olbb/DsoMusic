@@ -44,7 +44,7 @@ object Api {
             params["cookie"] = User.cookie
         }
         val url = "$API_NEW/playlist/detail?hash=${params.hashCode()}"
-        val result = HttpUtils.postWithCache(url, params, Playlist.PlaylistData::class.java, useCache)
+        val result = HttpUtils.postWithCache(url, params, DetailPlaylistData::class.java, useCache)
         val trackIds = ArrayList<Long>()
         result?.result?.playlist?.trackIds?.forEach {
             trackId -> trackIds.add(trackId.id)
@@ -78,7 +78,7 @@ object Api {
 
         }
         Log.d(TAG, "get playlist id $id, size:${list.size} , origin size:${trackIds.size}")
-        return PackedSongList(list, result?.isCache?:false)
+        return PackedSongList(list, result?.isCache?:false, result?.result?.playlist)
     }
 
     suspend fun searchMusic(keyword:String, type:SearchType): StandardSearchResult? {

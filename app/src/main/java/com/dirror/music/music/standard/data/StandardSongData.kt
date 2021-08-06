@@ -3,6 +3,8 @@ package com.dirror.music.music.standard.data
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
+import com.dirror.music.data.DetailPlaylistData
+import com.dirror.music.data.DetailPlaylistInnerData
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -109,5 +111,6 @@ fun StandardSongData.quality(): Int {
 
 data class PackedSongList(
     val songs: ArrayList<StandardSongData>,
-    var isCache: Boolean = false
+    var isCache: Boolean = false,
+    val detail: DetailPlaylistInnerData?
 )

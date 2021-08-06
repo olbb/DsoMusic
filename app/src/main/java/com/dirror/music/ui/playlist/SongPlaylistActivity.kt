@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.size.ViewSizeResolver
+import com.dirror.music.MyApp
 import com.dirror.music.R
 import com.dirror.music.adapter.SongAdapter
 import com.dirror.music.data.SearchType
@@ -141,7 +142,7 @@ class SongPlaylistActivity: BaseActivity() {
     }
 
     override fun initObserver() {
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = PlaylistLayoutManager(this)
         binding.rvPlaylist.layoutManager = layoutManager
         binding.rvPlaylist.adapter = adapter
         songPlaylistViewModel.apply {
@@ -160,6 +161,14 @@ class SongPlaylistActivity: BaseActivity() {
                 }
                 if (sizeChange && pos >= 0) {//keep scroll pos
                     binding.rvPlaylist.post { layoutManager.scrollToPositionWithOffset(pos, top) }
+                } else if (pos == 0 && top == 0) {
+                    val playingItem = MyApp.musicController.value?.getPlayingSongData()?.value
+                    it.forEachIndexed { index, song ->
+                        if (song == playingItem) {
+                            binding.rvPlaylist.post { binding.rvPlaylist.smoothScrollToPosition(index + 1) }
+                            return@forEachIndexed
+                        }
+                    }
                 }
             })
             playlistTitle.observe(this@SongPlaylistActivity, {

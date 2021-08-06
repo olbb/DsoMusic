@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.size.ViewSizeResolver
 import coil.transform.RoundedCornersTransformation
+import com.dirror.music.MyApp
 import com.dirror.music.MyApp.Companion.mmkv
 import com.dirror.music.R
 import com.dirror.music.music.standard.data.*
+import com.dirror.music.service.MusicService
 import com.dirror.music.service.playMusic
 import com.dirror.music.util.*
 import com.dirror.music.util.parse
@@ -29,6 +31,9 @@ import com.dso.ext.toArrayList
 class SongAdapter(
     private val itemMenuClickedListener: (StandardSongData) -> Unit
 ) : ListAdapter<StandardSongData, SongAdapter.ViewHolder>(DiffCallback) {
+
+    private var playingItemId = MyApp.musicController.value?.getPlayingSongData()?.value?.id ?: "-1"
+    private var lastPlayingItemIndex = -1
 
     inner class ViewHolder(view: View, itemMenuClickedListener: (StandardSongData) -> Unit) : RecyclerView.ViewHolder(view) {
         val clSong: ConstraintLayout = view.findViewById(R.id.clSong)
@@ -124,10 +129,19 @@ class SongAdapter(
             // 点击项目
             clSong.setOnClickListener {
                 playMusic(it.context, song, currentList.toArrayList())
+                playingItemId = song.id ?: "-1"
+                if (lastPlayingItemIndex != -1) {
+                    notifyItemChanged(lastPlayingItemIndex)
+                }
+                notifyItemChanged(position)
             }
             if (isAnimation) {
                 setAnimation(holder.itemView, position)
             }
+            val isPlaying = playingItemId == song.id
+            if (isPlaying) lastPlayingItemIndex = position
+            val textColor = tvTitle.resources.getColor(if (isPlaying) R.color.colorAppThemeColor else R.color.colorTextForeground)
+            tvTitle.setTextColor(textColor)
         }
     }
 

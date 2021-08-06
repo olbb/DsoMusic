@@ -116,7 +116,7 @@ class MyApp : Application() {
                 Log.i(TAG, "ip is expired.")
                 realIP = ChineseIPData.getRandomIP(this@MyApp)
                 mmkv.encode(lastIP, realIP)
-                mmkv.encode(lastIPExpiredTime, now + 24 * 60 * 60 * 1000)
+                mmkv.encode(lastIPExpiredTime, now + 24 * 60 * 60 * 1000 * 7)
             } else{
                 realIP = ip
             }

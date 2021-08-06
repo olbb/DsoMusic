@@ -108,17 +108,7 @@ class SongPlaylistViewModel : ViewModel() {
         }
         when (tag.value) {
             TAG_NETEASE -> {
-                GlobalScope.launch {
-                    val info = Api.getPlayListInfo(playlistId.value?.toLong() ?: 0L)
-                    if (info != null) {
-                        withContext(Dispatchers.Main) {
-                            playlistUrl.value = info.coverImgUrl ?: ""
-                            playlistTitle.value = info.name ?: ""
-                            playlistDescription.value = info.description ?: ""
-                            subscribed.value = info.subscribed
-                        }
-                    }
-                }
+
             }
             TAG_NETEASE_MY_FAVORITE -> {
                 playlistTitle.value = "我喜欢"
@@ -148,12 +138,21 @@ class SongPlaylistViewModel : ViewModel() {
                 withContext(Dispatchers.Main) {
                     if (packed.songs.isEmpty()) {
                         toast("歌单内容获取失败")
+                    } else{
+                        songList.value = packed.songs
+                        Log.d(TAG, "getPlaylist finished, isCache:${packed.isCache}, size:${packed.songs.size}")
+                        if (tag.value == TAG_NETEASE_MY_FAVORITE) {
+                            playlistUrl.value = packed.songs.first().imageUrl ?: ""
+                        } else {
+                            packed.detail?.apply {
+                                playlistUrl.value = coverImgUrl ?: ""
+                                playlistTitle.value = name ?: ""
+                                playlistDescription.value = description ?: ""
+                                this@SongPlaylistViewModel.subscribed.value = subscribed
+                            }
+                        }
                     }
-                    songList.value = packed.songs
-                    Log.d(TAG, "getPlaylist finished, isCache:${packed.isCache}, size:${packed.songs.size}")
-                    if (tag.value == TAG_NETEASE_MY_FAVORITE && packed.songs.isNotEmpty()) {
-                        playlistUrl.value = packed.songs.first().imageUrl ?: ""
-                    }
+
                 }
                 if (useCache && packed.isCache) {
                     getPlaylist(id, false)
