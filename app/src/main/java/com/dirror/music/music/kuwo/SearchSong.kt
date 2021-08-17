@@ -1,6 +1,7 @@
 package com.dirror.music.music.kuwo
 
 import android.net.Uri
+import android.util.Log
 import com.dirror.music.music.standard.data.SOURCE_KUWO
 import com.dirror.music.music.standard.data.StandardSongData
 import com.dirror.music.util.*
@@ -12,6 +13,9 @@ import java.lang.Exception
  * 搜索酷我音乐
  */
 object SearchSong {
+
+    private const val KEY = "ylzsxkwm"
+    private const val TAG = "KUWO"
 
     // http://search.kuwo.cn/r.s?songname=%E6%90%81%E6%B5%85&ft=music&rformat=json&encoding=utf8&rn=8&callback=song&vipver=MUSIC_8.0.3.1
     // http://kuwo.cn/api/www/search/searchMusicBykeyWord?key=%E6%90%81%E6%B5%85&pn=1&rn=30&httpsStatus=1&reqId=24020ad0-3ab4-11eb-8b50-cf8a98bef531
@@ -133,6 +137,42 @@ object SearchSong {
 
         })
     }
+
+    suspend fun getUrl(rid:String) : String {
+        val url = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=${encode(rid)}"
+        //format=mp3 bitrate=320 url=http://sf.sycdn.kuwo.cn/4265b42e9efac41dab95c747f6397624/611b8bb0/resource/n1/76/97/486140587.mp3 sig=2087957923118522528
+        val result = HttpUtils.get(url, String::class.java)
+        val r = KuwoUrlResult("", "", "")
+        result?.split("\n")?.forEach {
+            when {
+                it.startsWith("format=") -> {
+                    r.format = it.substring(7)
+                }
+                it.startsWith("bitrate=") -> {
+                    r.bitrate = it.substring(8)
+                }
+                it.startsWith("url=") -> {
+                    r.url = it.substring(4)
+                }
+            }
+        }
+        Log.d(TAG, "getUrl: $r")
+        return r.url
+    }
+
+    private fun encode(id: String): String {
+        val s =
+            "user=e3cc098fd4c59ce2&android_id=e3cc098fd4c59ce2&prod=kwplayer_ar_9.3.1.3&corp=kuwo&newver=2&vipver=9.3.1.3&source=kwplayer_ar_9.3.1.3_qq.apk&p2p=1&notrace=0&type=convert_url2&br=2000kflac&format=flac|mp3|aac&sig=0&rid=$id&priority=bitrate&loginUid=435947810&network=WIFI&loginSid=1694167478&mode=download&uid=658048466"
+        val bArr = s.toByteArray()
+        val a2 = d.a(bArr, bArr.size, KEY.toByteArray(), KEY.toByteArray().size)
+        return String(b.a(a2, a2.size))
+    }
+
+    data class KuwoUrlResult(
+        var format : String,
+        var bitrate : String,
+        var url : String
+    )
 
     // http://www.kuwo.cn/url?format=mp3&rid=94239&response=url&type=convert_url3&br=128kmp3&from=web&t=1609079909636&httpsStatus=1
 
