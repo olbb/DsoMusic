@@ -143,7 +143,7 @@ object SearchSong {
         //format=mp3 bitrate=320 url=http://sf.sycdn.kuwo.cn/4265b42e9efac41dab95c747f6397624/611b8bb0/resource/n1/76/97/486140587.mp3 sig=2087957923118522528
         val result = HttpUtils.get(url, String::class.java)
         val r = KuwoUrlResult("", "", "")
-        result?.split("\n")?.forEach {
+        result?.split("\r\n")?.forEach {
             when {
                 it.startsWith("format=") -> {
                     r.format = it.substring(7)

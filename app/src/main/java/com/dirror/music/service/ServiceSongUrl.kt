@@ -54,8 +54,11 @@ object ServiceSongUrl {
                 }
             }
             SOURCE_KUWO -> {
-                SearchSong.getUrl(song.id?:"") {
-                    success.invoke(it)
+                GlobalScope.launch {
+                    val url = SearchSong.getUrl(song.id?:"")
+                    withContext(Dispatchers.Main) {
+                        success.invoke(url)
+                    }
                 }
             }
             SOURCE_NETEASE_CLOUD -> {
