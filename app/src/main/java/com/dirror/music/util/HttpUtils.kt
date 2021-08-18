@@ -34,11 +34,8 @@ object HttpUtils {
         .build()
 
 
-    suspend fun <T> get(url: String, clazz: Class<T>): T? = withContext(Dispatchers.IO) {
-        return@withContext get(url, clazz, false)
-    }
-
-    suspend fun <T> get(url: String, clazz: Class<T>, forceCache: Boolean): T? = withContext(Dispatchers.IO) {
+    suspend fun <T> get(url: String, clazz: Class<T>, forceCache: Boolean = false,
+                        headers: Map<String,String> = HashMap()): T? = withContext(Dispatchers.IO) {
         val time = System.currentTimeMillis()
         var result: T? = null
         var str: String? = null
@@ -52,6 +49,9 @@ object HttpUtils {
                 requestBuilder.url(url)
             } else{
                 requestBuilder.url(urlBuilder.build())
+            }
+            for ((k,v) in headers) {
+                requestBuilder.header(k, v)
             }
             val request = requestBuilder.header(USE_CACHE, if (forceCache) CACHE_FORCE else "").build()
             realUrl = request.url().toString()
