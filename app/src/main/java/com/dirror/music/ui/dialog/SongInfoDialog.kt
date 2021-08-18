@@ -51,6 +51,7 @@ class SongInfoDialog(
                                 binding.valueViewBitrate.setValue("${data.br / 1000} kbps")
                                 binding.valueViewSize.setValue(data.size.toSizeFormat())
                                 binding.valueViewType.setValue(data.type ?: "未知")
+                                initSongInfo()
                             }
                         }
                     }
@@ -74,6 +75,7 @@ class SongInfoDialog(
                     }
                     SOURCE_KUWO -> {
                         binding.valueViewSource.setValue("酷我音乐")
+                        initSongInfo()
                     }
                 }
 
@@ -83,6 +85,18 @@ class SongInfoDialog(
 
 
 
+    }
+
+    private fun initSongInfo() {
+        MyApp.musicController.value?.getPlayingSongData()?.value?.apply {
+            if (br > 0) {
+                binding.valueViewBitrate.setValue("${br / 1000} kbps")
+            }
+            if (fileSize > 0) {
+                binding.valueViewSize.setValue(fileSize.toSizeFormat())
+            }
+            binding.valueViewType.setValue(type)
+        }
     }
 
 }

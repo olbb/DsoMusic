@@ -2,7 +2,6 @@ package com.dirror.music.service
 
 import android.content.ContentUris
 import android.net.Uri
-import android.text.TextUtils
 import android.util.Log
 import com.dirror.music.MyApp
 import com.dirror.music.data.LyricViewData
@@ -12,6 +11,7 @@ import com.dirror.music.music.qq.PlayUrl
 import com.dirror.music.music.standard.SearchLyric
 import com.dirror.music.music.standard.data.*
 import com.dirror.music.util.Api
+import com.dirror.music.util.HttpUtils
 import com.dirror.music.util.runOnMainThread
 import com.dirror.music.util.toast
 import kotlinx.coroutines.Dispatchers
@@ -42,15 +42,19 @@ object ServiceSongUrl {
                     var url = ""
                     Api.getFromKuWo(song)?.let { kuwo ->
                         Log.d(TAG, "search from kuwo get $kuwo")
-                        url = SearchSong.getUrl(kuwo.id?:"")
+                        val res = SearchSong.getUrl(kuwo.id?:"")
+                        url = res.url
                         if (url.isNotEmpty()) {
                             toast("${song.name} 替换酷我成功")
+                            song.br = res.bitrateX
+                            song.type = res.format
                         }
                     }
                     if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id?:"")
                     withContext(Dispatchers.Main) {
                         success.invoke(url)
                     }
+                    song.fileSize = HttpUtils.getRemoteFileSize(url)
                 }
             }
             SOURCE_QQ -> {

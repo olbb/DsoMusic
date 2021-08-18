@@ -10,6 +10,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.File
 import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+import java.io.IOException
+import java.net.URL
 
 
 object HttpUtils {
@@ -88,6 +91,15 @@ object HttpUtils {
         useCache: Boolean
     ): CacheResult<T>? {
         return postWithCache(url, params, clazz, if(useCache) CACHE_FORCE else CACHE_UPDATE)
+    }
+
+    suspend fun getRemoteFileSize(url: String): Long {
+        // get only the head not the whole file
+        val url = URL(url)
+        val urlConnection = url.openConnection()
+        urlConnection.connect()
+        val size = urlConnection.getContentLength()
+        return size.toLong()
     }
 
     private suspend fun <T> postWithCache(

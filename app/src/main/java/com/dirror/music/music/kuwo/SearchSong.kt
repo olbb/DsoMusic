@@ -138,18 +138,18 @@ object SearchSong {
         })
     }
 
-    suspend fun getUrl(rid:String) : String {
+    suspend fun getUrl(rid:String) : KuwoUrlResult {
         val url = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=${encode(rid)}"
         //format=mp3 bitrate=320 url=http://sf.sycdn.kuwo.cn/4265b42e9efac41dab95c747f6397624/611b8bb0/resource/n1/76/97/486140587.mp3 sig=2087957923118522528
         val result = HttpUtils.get(url, String::class.java)
-        val r = KuwoUrlResult("", "", "")
+        val r = KuwoUrlResult("", 0, "")
         result?.split("\r\n")?.forEach {
             when {
                 it.startsWith("format=") -> {
                     r.format = it.substring(7)
                 }
                 it.startsWith("bitrate=") -> {
-                    r.bitrate = it.substring(8)
+                    r.bitrateX = it.substring(8).toLong() * 1000
                 }
                 it.startsWith("url=") -> {
                     r.url = it.substring(4)
@@ -157,7 +157,7 @@ object SearchSong {
             }
         }
         Log.d(TAG, "getUrl: $r")
-        return r.url
+        return r
     }
 
     private fun encode(id: String): String {
@@ -170,7 +170,7 @@ object SearchSong {
 
     data class KuwoUrlResult(
         var format : String,
-        var bitrate : String,
+        var bitrateX : Long,
         var url : String
     )
 

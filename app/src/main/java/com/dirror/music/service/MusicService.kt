@@ -469,6 +469,8 @@ open class MusicService : BaseMediaService() {
             sendMusicBroadcast()
 
             songData.value?.let { standardSongData ->
+                standardSongData.br = mediaPlayer.bitRate
+                Log.d(TAG, "media bitrate is: ${standardSongData.br}")
                 // 获取歌词
                 ServiceSongUrl.getLyric(standardSongData) {
                     val mainLyricText = it.lyric

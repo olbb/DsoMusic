@@ -28,7 +28,13 @@ data class StandardSongData(
     val localInfo: LocalInfo?,
 
     @Embedded
-    val dirrorInfo: DirrorInfo?
+    val dirrorInfo: DirrorInfo?,
+
+    var type: String = "未知",
+
+    var br: Long = 0,
+
+    var fileSize: Long = 0
 ) : Parcelable {
 
     @Ignore

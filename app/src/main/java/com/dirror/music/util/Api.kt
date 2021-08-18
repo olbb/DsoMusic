@@ -152,7 +152,7 @@ object Api {
         val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
         val artistName = song.artists?.first()?.name
         searchFromKuwo("$songName $artistName")?.forEach { res ->
-            if (res.name == song.name ||  (res.name != null && res.name.contains(songName))) {
+            if (res.name == song.name ||  (res.name != null && res.name.contains(songName) && !res.name.contains("伴奏"))) {
                 val artName = res.artists?.first()?.name ?: ""
                 song.artists?.let { artists ->
                     var checkSingerCount = 0
