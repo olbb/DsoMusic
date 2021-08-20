@@ -41,19 +41,7 @@ class SongInfoDialog(
             songData.let {
                 when (it.source) {
                     SOURCE_NETEASE -> {
-                        MyApp.cloudMusicManager.getSongInfo(it.id ?: "") { data ->
-                            runOnMainThread {
-                                if (SearchSong.getDirrorSongUrl(it.id ?: "") != "") {
-                                    binding.valueViewSource.setValue("Dirror 音乐")
-                                } else {
-                                    binding.valueViewSource.setValue("网易云音乐")
-                                }
-                                binding.valueViewBitrate.setValue("${data.br / 1000} kbps")
-                                binding.valueViewSize.setValue(data.size.toSizeFormat())
-                                binding.valueViewType.setValue(data.type ?: "未知")
-                                initSongInfo()
-                            }
-                        }
+                        initSongInfo()
                     }
                     SOURCE_QQ -> {
                         if (SearchSong.getDirrorSongUrl(it.id ?: "") != "") {
@@ -64,6 +52,7 @@ class SongInfoDialog(
                         binding.valueViewBitrate.setValue("未知")
                         binding.valueViewSize.setValue("未知")
                         binding.valueViewType.setValue("未知")
+                        initSongInfo()
                     }
                     SOURCE_LOCAL -> {
                         valueViewSource.setValue(context.getString(R.string.local_music))

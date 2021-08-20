@@ -75,10 +75,13 @@ object ServiceSongUrl {
             }
             SOURCE_KUWO -> {
                 GlobalScope.launch {
-                    val url = SearchSong.getUrl(song.id?:"")
+                    val r = SearchSong.getUrl(song.id?:"")
+                    song.br = r.bitrateX
+                    song.type = r.format
                     withContext(Dispatchers.Main) {
-                        success.invoke(url)
+                        success.invoke(r.url)
                     }
+                    song.fileSize = HttpUtils.getRemoteFileSize(r.url)
                 }
             }
             SOURCE_NETEASE_CLOUD -> {
