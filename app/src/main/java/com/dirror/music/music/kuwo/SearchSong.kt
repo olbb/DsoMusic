@@ -164,8 +164,8 @@ object SearchSong {
         val s =
             "user=e3cc098fd4c59ce2&android_id=e3cc098fd4c59ce2&prod=kwplayer_ar_9.3.1.3&corp=kuwo&newver=2&vipver=9.3.1.3&source=kwplayer_ar_9.3.1.3_qq.apk&p2p=1&notrace=0&type=convert_url2&br=2000kflac&format=flac|mp3|aac&sig=0&rid=$id&priority=bitrate&loginUid=435947810&network=WIFI&loginSid=1694167478&mode=download&uid=658048466"
         val bArr = s.toByteArray()
-        val a2 = d.a(bArr, bArr.size, KEY.toByteArray(), KEY.toByteArray().size)
-        return String(b.a(a2, a2.size))
+        val a2 = d.compressBArr(bArr, bArr.size, KEY.toByteArray())
+        return String(b.bArrToCArr(a2, a2.size))
     }
 
     data class KuwoUrlResult(
