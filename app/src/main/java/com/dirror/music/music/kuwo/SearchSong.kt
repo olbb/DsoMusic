@@ -120,25 +120,19 @@ object SearchSong {
      * 音质
      * 128 / 192 / 320
      */
-    fun getUrl(rid: String, success: (String) -> Unit) {
-
+    suspend fun getUrl(rid: String) : String {
         val id = rid.replace("MUSIC_", "")
         val url =
             "http://www.kuwo.cn/url?format=mp3&rid=${id}&response=url&type=convert_url3&br=990kmp3&from=web&t=${getCurrentTime()}&httpsStatus=1"
         loge("链接: $url")
-        MagicHttp.OkHttpManager().newGet(url, {
-            try {
-                val kuwoUrlData = Gson().fromJson(it, KuwoUrlData::class.java)
-                success.invoke(kuwoUrlData.url)
-            } catch (e: Exception) {
-                toast("获取链接失败")
-            }
-        }, {
-
-        })
+        HttpUtils.get(url, KuwoUrlData::class.java)?.let {
+            return it.url
+        }
+        toast("获取链接失败")
+        return ""
     }
 
-    suspend fun getUrl(rid:String) : KuwoUrlResult {
+    suspend fun getUrlKW(rid:String) : KuwoUrlResult {
         val url = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=${encode(rid)}"
         //format=mp3 bitrate=320 url=http://sf.sycdn.kuwo.cn/4265b42e9efac41dab95c747f6397624/611b8bb0/resource/n1/76/97/486140587.mp3 sig=2087957923118522528
         val result = HttpUtils.get(url, String::class.java)

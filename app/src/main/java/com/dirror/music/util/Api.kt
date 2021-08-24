@@ -121,6 +121,33 @@ object Api {
         if (r != null) {
             return r
         }
+        return getFromQQ(song)
+    }
+
+    suspend fun getFromKuWo(song: StandardSongData): StandardSongData? {
+        val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
+        val artistName = song.artists?.first()?.name
+        searchFromKuwo("$songName $artistName")?.forEach { res ->
+            if (res.name == song.name ||  (res.name != null && res.name.contains(songName) && !res.name.contains("伴奏"))) {
+                val artName = res.artists?.first()?.name ?: ""
+                song.artists?.let { artists ->
+                    var checkSingerCount = 0
+                    for (singer in artists) {
+                        if (singer.name == artName || singer.name != null && artName.contains(singer.name)) {
+                            checkSingerCount++
+                        } else {
+                            break
+                        }
+                    }
+                    if (checkSingerCount == song.artists.size) return res
+                }
+
+            }
+        }
+        return null
+    }
+
+    suspend fun getFromQQ(song: StandardSongData): StandardSongData? {
         val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
         val artistName = song.artists?.first()?.name
         searchFromQQ("$songName $artistName")?.data?.song?.list?.let {
@@ -143,33 +170,6 @@ object Api {
                     }
                     if (checkSingerCount == song.artists?.size) return res.switchToStandard()
                 }
-            }
-        }
-        return null
-    }
-
-    suspend fun getFromKuWo(song: StandardSongData): StandardSongData? {
-        val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
-        val artistName = song.artists?.first()?.name
-        searchFromKuwo("$songName $artistName")?.forEach { res ->
-            if (res.name == song.name ||  (res.name != null && res.name.contains(songName) && !res.name.contains("伴奏"))) {
-                val artName = res.artists?.first()?.name ?: ""
-                song.artists?.let { artists ->
-                    var checkSingerCount = 0
-                    for (singer in artists) {
-                        if (artName == singer.name) {
-                            return res
-                        } else if (singer.name != null) {
-                            if (artName.contains(singer.name)) {
-                                checkSingerCount++
-                            } else {
-                                break
-                            }
-                        }
-                    }
-                    if (checkSingerCount == song.artists.size) return res
-                }
-
             }
         }
         return null

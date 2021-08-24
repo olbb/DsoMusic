@@ -128,7 +128,11 @@ class SongAdapter(
             }
             // 点击项目
             clSong.setOnClickListener {
-                playMusic(it.context, song, currentList.toArrayList())
+                if (song.neteaseInfo?.pl != 0 || mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
+                    playMusic(it.context, song, currentList.toArrayList())
+                } else {
+                    toast("网易云暂无版权或者是 VIP 歌曲，可以试试 QQ 音源")
+                }
                 playingItemId = song.id ?: "-1"
                 if (lastPlayingItemIndex != -1) {
                     notifyItemChanged(lastPlayingItemIndex)
@@ -149,7 +153,7 @@ class SongAdapter(
      * 播放第一首歌
      */
     fun playFirst() {
-        playMusic(null, getItem(0), currentList.toArrayList())
+        playMusic(null, getItem(0), currentList.toArrayList(), true)
     }
 
     /**

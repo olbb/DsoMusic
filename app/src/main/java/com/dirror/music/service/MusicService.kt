@@ -391,7 +391,7 @@ open class MusicService : BaseMediaService() {
 
         override fun getPlaylist(): ArrayList<StandardSongData>? = PlayQueue.currentQueue.value
 
-        override fun playMusic(song: StandardSongData) {
+        override fun playMusic(song: StandardSongData, playNext: Boolean) {
             isPrepared = false
             songData.value = song
             // 保存当前播放音乐
@@ -403,6 +403,13 @@ open class MusicService : BaseMediaService() {
             // 初始化
             mediaPlayer.apply {
                 ServiceSongUrl.getUrlProxy(song) {
+                    if (it == null || it is String && it.isEmpty()) {
+                        if (playNext) {
+                            toast("当前歌曲不可用, 播放下一首")
+                            playNext()
+                        }
+                        return@getUrlProxy
+                    }
                     when (it) {
                         is String -> {
                             if (!InternetState.isWifi(MyApp.context) && !mmkv.decodeBool(
@@ -439,14 +446,6 @@ open class MusicService : BaseMediaService() {
                 }
             }
 
-        }
-
-        private fun playMusicProxy(song: StandardSongData) {
-            if (mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE, false) && PlayQueue.currentQueue.value != null) {
-                com.dirror.music.service.playMusic(null, song, PlayQueue.currentQueue.value!!, true)
-            } else {
-                playMusic(song)
-            }
         }
 
         fun sendMusicBroadcast() {
@@ -654,7 +653,7 @@ open class MusicService : BaseMediaService() {
 
         override fun playPrevious() {
             PlayQueue.currentQueue.value?.previous(songData.value)?.let {
-                playMusicProxy(it)
+                playMusic(it)
             }
         }
 
@@ -676,7 +675,7 @@ open class MusicService : BaseMediaService() {
                 }
             }
             PlayQueue.currentQueue.value?.next(songData.value)?.let {
-                playMusicProxy(it)
+                playMusic(it)
             }
         }
 

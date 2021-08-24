@@ -10,10 +10,7 @@ import com.dirror.music.music.netease.SongUrl
 import com.dirror.music.music.qq.PlayUrl
 import com.dirror.music.music.standard.SearchLyric
 import com.dirror.music.music.standard.data.*
-import com.dirror.music.util.Api
-import com.dirror.music.util.HttpUtils
-import com.dirror.music.util.runOnMainThread
-import com.dirror.music.util.toast
+import com.dirror.music.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -39,27 +36,41 @@ object ServiceSongUrl {
         when (song.source) {
             SOURCE_NETEASE -> {
                 GlobalScope.launch {
-                    var url = ""
-                    Api.getFromKuWo(song)?.let { kuwo ->
-                        Log.d(TAG, "search from kuwo get $kuwo")
-                        val res = SearchSong.getUrl(kuwo.id?:"")
-                        url = res.url
-                        if (url.isNotEmpty()) {
-                            toast("${song.name} 替换酷我成功")
-                            song.br = res.bitrateX
-                            song.type = res.format
+                    if (song.neteaseInfo?.pl == 0) {
+                        if (MyApp.mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
+                            GlobalScope.launch {
+                                val url = getUrlFromOther(song)
+                                if (url.isEmpty()) {
+                                    toast("自动换源失败，未找到可用源")
+                                }
+                                success.invoke(url)
+                            }
+                        } else {
+                            success.invoke(null)
                         }
+                    } else {
+                        var url = ""
+                        Api.getFromKuWo(song)?.let { kuwo ->
+                            Log.d(TAG, "search from kuwo get $kuwo")
+                            val res = SearchSong.getUrlKW(kuwo.id?:"")
+                            url = res.url
+                            if (url.isNotEmpty()) {
+                                toast("${song.name} 替换酷我成功")
+                                song.br = res.bitrateX
+                                song.type = res.format
+                            }
+                        }
+                        if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id?:"")
+                        withContext(Dispatchers.Main) {
+                            success.invoke(url)
+                        }
+                        song.fileSize = HttpUtils.getRemoteFileSize(url)
                     }
-                    if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id?:"")
-                    withContext(Dispatchers.Main) {
-                        success.invoke(url)
-                    }
-                    song.fileSize = HttpUtils.getRemoteFileSize(url)
                 }
             }
             SOURCE_QQ -> {
-                PlayUrl.getPlayUrl(song.id?:"") {
-                    success.invoke(it)
+                GlobalScope.launch {
+                    success.invoke(PlayUrl.getPlayUrl(song.id?:""))
                 }
             }
             SOURCE_LOCAL -> {
@@ -75,7 +86,7 @@ object ServiceSongUrl {
             }
             SOURCE_KUWO -> {
                 GlobalScope.launch {
-                    val r = SearchSong.getUrl(song.id?:"")
+                    val r = SearchSong.getUrlKW(song.id?:"")
                     song.br = r.bitrateX
                     song.type = r.format
                     withContext(Dispatchers.Main) {
@@ -108,6 +119,39 @@ object ServiceSongUrl {
                 }
             }
         }
+    }
+
+    suspend fun getUrlFromOther(song: StandardSongData) : String {
+        Api.getFromKuWo(song)?.apply {
+            SearchSong.getUrl(id?:"").let {
+                if (it.isNotEmpty()) {
+                    toast("换源到酷我[$name-${getArtistName(artists)}]成功")
+                }
+                return it
+            }
+        }
+        Api.getFromQQ(song)?.apply {
+           PlayUrl.getPlayUrl(id?:"").let {
+               if (it.isNotEmpty()) {
+                   toast("换源到QQ[$name-${getArtistName(artists)}]成功")
+               }
+               return it
+           }
+
+
+        }
+        return ""
+    }
+
+    private fun getArtistName(artists:List<StandardSongData.StandardArtistData>?) : String {
+        val sb = StringBuilder()
+        artists?.forEach {
+            if (sb.isNotEmpty()) {
+                sb.append(" ")
+            }
+            sb.append(it.name)
+        }
+        return sb.toString()
     }
 
 }
