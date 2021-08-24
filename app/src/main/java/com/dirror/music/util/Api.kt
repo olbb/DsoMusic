@@ -124,10 +124,10 @@ object Api {
         return getFromQQ(song)
     }
 
-    suspend fun getFromKuWo(song: StandardSongData): StandardSongData? {
+    suspend fun getFromKuWo(song: StandardSongData, lossless: Boolean = false): StandardSongData? {
         val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
         val artistName = song.artists?.first()?.name
-        searchFromKuwo("$songName $artistName")?.forEach { res ->
+        searchFromKuwo("$songName $artistName", lossless)?.forEach { res ->
             if (res.name == song.name ||  (res.name != null && res.name.contains(songName) && !res.name.contains("伴奏"))) {
                 val artName = res.artists?.first()?.name ?: ""
                 song.artists?.let { artists ->
@@ -191,7 +191,7 @@ object Api {
         return null
     }
 
-    private suspend fun searchFromKuwo(keywords: String): List<StandardSongData>? {
+    private suspend fun searchFromKuwo(keywords: String, lossless: Boolean = false): List<StandardSongData>? {
         val url =
             "http://kuwo.cn/api/www/search/searchMusicBykeyWord?key=$keywords&pn=1&rn=50&httpsStatus=1&reqId=24020ad0-3ab4-11eb-8b50-cf8a98bef531"
         val header = mapOf(
@@ -211,6 +211,14 @@ object Api {
                 // 每首歌适配
                 (0 until songList.length()).forEach {
                     val songInfo = songList[it] as JSONObject
+                    val duration = songInfo.getIntOrNull("duration")
+                    if (duration <= 10) {//酷我可能返回只有7s的无版权提示
+                        return@forEach
+                    }
+                    val hasLossless = songInfo.getBoolean("hasLossless")
+                    if (lossless && !hasLossless) {//只取有无损音质的
+                        return@forEach
+                    }
                     standardSongDataList.add(
                         com.dirror.music.music.kuwo.SearchSong.KuwoSearchData.SongData(
                             songInfo.getIntOrNull("rid").toString(),

@@ -50,12 +50,12 @@ object ServiceSongUrl {
                         }
                     } else {
                         var url = ""
-                        Api.getFromKuWo(song)?.let { kuwo ->
+                        Api.getFromKuWo(song, true)?.let { kuwo ->
                             Log.d(TAG, "search from kuwo get $kuwo")
                             val res = SearchSong.getUrlKW(kuwo.id?:"")
                             url = res.url
                             if (url.isNotEmpty()) {
-                                toast("${song.name} 替换酷我成功")
+                                toast("替换酷我无损[${kuwo.name}-${getArtistName(kuwo.artists)}]成功")
                                 song.br = res.bitrateX
                                 song.type = res.format
                             }
@@ -143,7 +143,7 @@ object ServiceSongUrl {
         return ""
     }
 
-    private fun getArtistName(artists:List<StandardSongData.StandardArtistData>?) : String {
+    fun getArtistName(artists:List<StandardSongData.StandardArtistData>?) : String {
         val sb = StringBuilder()
         artists?.forEach {
             if (sb.isNotEmpty()) {
