@@ -36,15 +36,14 @@ object ServiceSongUrl {
         when (song.source) {
             SOURCE_NETEASE -> {
                 GlobalScope.launch {
+                    Log.i(TAG, "current thread is:${Thread.currentThread()}" )
                     if (song.neteaseInfo?.pl == 0) {
                         if (MyApp.mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
-                            GlobalScope.launch {
-                                val url = getUrlFromOther(song)
-                                if (url.isEmpty()) {
-                                    toast("自动换源失败，未找到可用源")
-                                }
-                                success.invoke(url)
+                            val url = getUrlFromOther(song)
+                            if (url.isEmpty()) {
+                                toast("自动换源失败，未找到可用源")
                             }
+                            success.invoke(url)
                         } else {
                             success.invoke(null)
                         }
@@ -123,11 +122,13 @@ object ServiceSongUrl {
 
     suspend fun getUrlFromOther(song: StandardSongData) : String {
         Api.getFromKuWo(song)?.apply {
-            SearchSong.getUrl(id?:"").let {
-                if (it.isNotEmpty()) {
+            SearchSong.getUrlKW(id?:"").let {
+                if (it.url.isNotEmpty()) {
+                    song.br = it.bitrateX
+                    song.type = it.format
                     toast("换源到酷我[$name-${getArtistName(artists)}]成功")
                 }
-                return it
+                return it.url
             }
         }
         Api.getFromQQ(song)?.apply {
