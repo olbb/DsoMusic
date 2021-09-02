@@ -1,7 +1,5 @@
 package com.dirror.music.service
 
-import android.content.ContentUris
-import android.net.Uri
 import android.util.Log
 import com.dirror.music.MyApp
 import com.dirror.music.data.LyricViewData
@@ -72,15 +70,9 @@ object ServiceSongUrl {
                     success.invoke(PlayUrl.getPlayUrl(song.id?:""))
                 }
             }
-            SOURCE_LOCAL -> {
-                val id = song.id?.toLong() ?: 0
-                val contentUri: Uri =
-                    ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-                success.invoke(contentUri)
-            }
             SOURCE_DIRROR -> {
-                song.dirrorInfo?.let {
-                    success.invoke(it.url)
+                GlobalScope.launch {
+                    success.invoke(song.dirrorInfo?.url)
                 }
             }
             SOURCE_KUWO -> {
