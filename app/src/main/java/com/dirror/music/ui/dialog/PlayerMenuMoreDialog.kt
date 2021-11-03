@@ -3,8 +3,8 @@ package com.dirror.music.ui.dialog
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import com.dirror.music.MyApp
 import com.dirror.music.data.SearchType
+import com.dirror.music.App
 import com.dirror.music.databinding.DialogPlayMoreBinding
 import com.dirror.music.manager.User
 import com.dirror.music.music.standard.data.SOURCE_NETEASE
@@ -35,7 +35,7 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
 
     override fun initView() {
 
-        MyApp.musicController.value?.getPlayingSongData()?.value?.let { it ->
+        App.musicController.value?.getPlayingSongData()?.value?.let { it ->
             binding.tvSongName.text = it.name
             song = it
         }
@@ -75,7 +75,7 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
             }
             // 歌曲信息
             itemSongInfo.setOnClickListener {
-                MyApp.musicController.value?.getPlayingSongData()?.value?.let { it1 ->
+                App.musicController.value?.getPlayingSongData()?.value?.let { it1 ->
                     SongInfoDialog(context, it1).show()
                 }
                 dismiss()
@@ -91,7 +91,7 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
                 dismiss()
                 TimingOffDialog(context).show()
             }
-            MyApp.musicController.value?.getPlayingSongData()?.value?.let {
+            App.musicController.value?.getPlayingSongData()?.value?.let {
 //                itemSearchPlayList.visibility = if (it.source == SOURCE_NETEASE) View.VISIBLE else View.GONE
                 itemViewSingerMoreSong.visibility = if (it.source == SOURCE_NETEASE &&
                         it.artists?.size == 1) View.VISIBLE else View.GONE

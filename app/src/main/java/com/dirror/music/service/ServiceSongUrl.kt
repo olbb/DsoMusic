@@ -1,7 +1,7 @@
 package com.dirror.music.service
 
 import android.util.Log
-import com.dirror.music.MyApp
+import com.dirror.music.App
 import com.dirror.music.data.LyricViewData
 import com.dirror.music.music.kuwo.SearchSong
 import com.dirror.music.music.netease.SongUrl
@@ -23,10 +23,11 @@ object ServiceSongUrl {
 
     inline fun getUrlProxy(song: StandardSongData, crossinline success: (Any?) -> Unit) {
         getUrl(song) {
-            GlobalScope.launch { withContext(Dispatchers.Main) {
-                success.invoke(it)
-            } }
-
+            GlobalScope.launch {
+                withContext(Dispatchers.Main) {
+                    success.invoke(it)
+                }
+            }
         }
     }
 
@@ -36,12 +37,11 @@ object ServiceSongUrl {
                 GlobalScope.launch {
                     Log.i(TAG, "current thread is:${Thread.currentThread()}" )
                     if (song.neteaseInfo?.pl == 0) {
-                        if (MyApp.mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
-                            val url = getUrlFromOther(song)
-                            if (url.isEmpty()) {
-                                toast("自动换源失败，未找到可用源")
+                        if (App.mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
+                            GlobalScope.launch {
+                                val url = getUrlFromOther(song)
+                                success.invoke(url)
                             }
-                            success.invoke(url)
                         } else {
                             success.invoke(null)
                         }
@@ -57,7 +57,7 @@ object ServiceSongUrl {
                                 song.type = res.format
                             }
                         }
-                        if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id?:"")
+                        if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id ?: "")
                         withContext(Dispatchers.Main) {
                             success.invoke(url)
                         }
@@ -67,7 +67,7 @@ object ServiceSongUrl {
             }
             SOURCE_QQ -> {
                 GlobalScope.launch {
-                    success.invoke(PlayUrl.getPlayUrl(song.id?:""))
+                    success.invoke(PlayUrl.getPlayUrl(song.id ?: ""))
                 }
             }
             SOURCE_DIRROR -> {
@@ -87,7 +87,7 @@ object ServiceSongUrl {
                 }
             }
             SOURCE_NETEASE_CLOUD -> {
-                SongUrl.getSongUrlCookie(song.id?:"") {
+                SongUrl.getSongUrlCookie(song.id ?: "") {
                     success.invoke(it)
                 }
             }
@@ -97,9 +97,9 @@ object ServiceSongUrl {
 
     fun getLyric(song: StandardSongData, success: (LyricViewData) -> Unit) {
         if (song.source == SOURCE_NETEASE) {
-            MyApp.cloudMusicManager.getLyric(song.id?.toLong() ?: 0) { lyric ->
+            App.cloudMusicManager.getLyric(song.id?.toLong() ?: 0) { lyric ->
                 runOnMainThread {
-                    val l = LyricViewData(lyric.lrc?.lyric?:"", lyric.tlyric?.lyric?:"")
+                    val l = LyricViewData(lyric.lrc?.lyric ?: "", lyric.tlyric?.lyric ?: "")
                     success.invoke(l)
                 }
             }
@@ -112,7 +112,7 @@ object ServiceSongUrl {
         }
     }
 
-    suspend fun getUrlFromOther(song: StandardSongData) : String {
+    suspend fun getUrlFromOther(song: StandardSongData): String {
         Api.getFromKuWo(song)?.apply {
             SearchSong.getUrlKW(id?:"").let {
                 if (it.url.isNotEmpty()) {
@@ -124,12 +124,9 @@ object ServiceSongUrl {
             }
         }
         Api.getFromQQ(song)?.apply {
-           PlayUrl.getPlayUrl(id?:"").let {
-               if (it.isNotEmpty()) {
-                   toast("换源到QQ[$name-${getArtistName(artists)}]成功")
-               }
-               return it
-           }
+            PlayUrl.getPlayUrl(id ?: "").let {
+                return it
+            }
 
 
         }

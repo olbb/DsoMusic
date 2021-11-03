@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.size.ViewSizeResolver
-import com.dirror.music.MyApp
+import com.dirror.music.App
 import com.dirror.music.R
 import com.dirror.music.adapter.SongAdapter
 import com.dirror.music.data.SearchType
@@ -162,7 +162,7 @@ class SongPlaylistActivity: BaseActivity() {
                 if (sizeChange && pos >= 0) {//keep scroll pos
                     binding.rvPlaylist.post { layoutManager.scrollToPositionWithOffset(pos, top) }
                 } else if (pos == 0 && top == 0) {
-                    val playingItem = MyApp.musicController.value?.getPlayingSongData()?.value
+                    val playingItem = App.musicController.value?.getPlayingSongData()?.value
                     it.forEachIndexed { index, song ->
                         if (song == playingItem) {
                             binding.rvPlaylist.post { binding.rvPlaylist.smoothScrollToPosition(index + 1) }

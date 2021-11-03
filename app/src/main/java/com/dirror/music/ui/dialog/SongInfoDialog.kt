@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import com.dirror.music.MyApp
+import com.dirror.music.App
 import com.dirror.music.R
 import com.dirror.music.databinding.DialogSongInfoBinding
 import com.dirror.music.music.dirror.SearchSong
@@ -77,7 +77,7 @@ class SongInfoDialog(
     }
 
     private fun initSongInfo() {
-        MyApp.musicController.value?.getPlayingSongData()?.value?.apply {
+        App.musicController.value?.getPlayingSongData()?.value?.apply {
             if (br > 0) {
                 binding.valueViewBitrate.setValue("${br / 1000} kbps")
             }

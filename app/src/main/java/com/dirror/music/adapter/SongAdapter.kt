@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.size.ViewSizeResolver
 import coil.transform.RoundedCornersTransformation
-import com.dirror.music.MyApp
-import com.dirror.music.MyApp.Companion.mmkv
+import com.dirror.music.App
+import com.dirror.music.App.Companion.mmkv
 import com.dirror.music.R
 import com.dirror.music.music.standard.data.*
 import com.dirror.music.service.MusicService
 import com.dirror.music.service.playMusic
 import com.dirror.music.util.*
-import com.dirror.music.util.parse
 import com.dso.ext.toArrayList
 
 /**
@@ -32,7 +31,7 @@ class SongAdapter(
     private val itemMenuClickedListener: (StandardSongData) -> Unit
 ) : ListAdapter<StandardSongData, SongAdapter.ViewHolder>(DiffCallback) {
 
-    private var playingItemId = MyApp.musicController.value?.getPlayingSongData()?.value?.id ?: "-1"
+    private var playingItemId = App.musicController.value?.getPlayingSongData()?.value?.id ?: "-1"
     private var lastPlayingItemIndex = -1
 
     inner class ViewHolder(view: View, itemMenuClickedListener: (StandardSongData) -> Unit) : RecyclerView.ViewHolder(view) {
