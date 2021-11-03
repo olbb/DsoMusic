@@ -949,8 +949,30 @@ open class MusicService : BaseMediaService() {
                     )
                     .build()
             )
-            song?.let { FloatWidgetHelper.setPlayInfo(song) }
+            song?.let {
+                FloatWidgetHelper.setPlayInfo(song)
+                try {
+                    updateForLynkCo(song)
+                } catch (e:Throwable) {
+                    e.localizedMessage?.let {
+                        toast("send to LynkCo failed:$it")
+                    }
+                }
+            }
         }
 
+    }
+
+    private fun updateForLynkCo(song:StandardSongData) {
+        val intent = Intent();
+        intent.action = "com.hyphp.playkeytool.service"
+        intent.putExtra("method", "test1")
+        intent.putExtra("getTrackName", song.name)//歌名
+//        intent.putExtra("getAlbumName", "")//专辑
+        intent.putExtra("getArtistName", song.artists?.parse())//歌手
+        intent.putExtra("getPlayPo", musicController.getProgress().toString())//当前播放毫秒
+        intent.putExtra("getDuration", musicController.getDuration().toString())//歌曲总毫秒
+//        intent.puLExtra("getArtwork", song.name)//封面文件路径
+        sendBroadcast(intent)
     }
 }
