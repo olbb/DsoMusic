@@ -32,6 +32,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.Keep
 import androidx.lifecycle.MutableLiveData
+import androidx.multidex.MultiDexApplication
 import com.dirror.music.manager.ActivityManager
 import com.dirror.music.manager.CloudMusicManager
 import com.dirror.music.room.AppDatabase
@@ -54,7 +55,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 @Keep
 @SuppressLint("StaticFieldLeak")
-class App : Application() {
+class App : MultiDexApplication() {
 
     companion object {
 

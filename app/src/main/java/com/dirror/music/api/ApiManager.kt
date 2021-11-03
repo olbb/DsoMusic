@@ -45,7 +45,7 @@ const val API_NEW = "http://163.lpddr5.cn"
  */
 const val API_MUSIC_ELEUU = API_NEW
 
-const val API_AUTU = "https://autumnfish.cn"
+const val API_AUTU = API_NEW
 
 const val API_LOGIN = API_AUTU
 
