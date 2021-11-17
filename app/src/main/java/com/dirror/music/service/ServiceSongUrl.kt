@@ -1,6 +1,8 @@
 package com.dirror.music.service
 
 import android.util.Log
+import android.content.ContentUris
+import android.net.Uri
 import com.dirror.music.App
 import com.dirror.music.data.LyricViewData
 import com.dirror.music.music.kuwo.SearchSong
@@ -64,6 +66,12 @@ object ServiceSongUrl {
                         song.fileSize = HttpUtils.getRemoteFileSize(url)
                     }
                 }
+            }
+            SOURCE_LOCAL -> {
+                val id = song.id?.toLong() ?: 0
+                val contentUri: Uri =
+                    ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+                success.invoke(contentUri)
             }
             SOURCE_QQ -> {
                 GlobalScope.launch {
