@@ -37,15 +37,13 @@ const val API_IMJAD = "https://api.imjad.cn/cloudmusic"
  */
 const val API_NETEASE = "https://music.163.com/api"
 
-
-const val API_NEW = "http://163.lpddr5.cn"
 /**
  * @类型 适用 NodeJs 版
  * @例子 http://music.eleuu.com/banner?type=1
  */
-const val API_MUSIC_ELEUU = API_NEW
+const val API_MUSIC_ELEUU = "http://music.eleuu.com"
 
-const val API_AUTU = API_NEW
+const val API_AUTU = "https://autumnfish.cn"
 
 const val API_LOGIN = API_AUTU
 

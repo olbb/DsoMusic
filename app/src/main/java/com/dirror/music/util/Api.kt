@@ -3,8 +3,8 @@ package com.dirror.music.util
 import android.net.Uri
 import android.util.Log
 import com.dirror.music.api.API_LOGIN
-import com.dirror.music.api.API_NEW
 import com.dirror.music.api.CloudMusicApi
+import com.dirror.music.api.API_AUTU
 import com.dirror.music.data.*
 import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
@@ -18,7 +18,6 @@ import com.dso.ext.averageAssignFixLength
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.json.JSONObject
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -36,7 +35,7 @@ object Api {
         if (User.hasCookie) {
             params["cookie"] = User.cookie
         }
-        val url = "$API_NEW/playlist/detail?id=${id}&hash=${params.hashCode()}"
+        val url = "${getDefaultApi()}/playlist/detail?id=${id}&hash=${params.hashCode()}"
         return HttpUtils.post(url, params, DetailPlaylistData::class.java)?.playlist
     }
 
@@ -46,7 +45,7 @@ object Api {
         if (User.hasCookie) {
             params["cookie"] = User.cookie
         }
-        val url = "$API_NEW/playlist/detail?hash=${params.hashCode()}"
+        val url = "${getDefaultApi()}/playlist/detail?hash=${params.hashCode()}"
         val result = HttpUtils.postWithCache(url, params, DetailPlaylistData::class.java, useCache)
         val trackIds = ArrayList<Long>()
         result?.result?.playlist?.trackIds?.forEach {
@@ -64,9 +63,9 @@ object Api {
                     idsBuilder.append(trackId)
                 }
                 val ids = idsBuilder.toString()
-                val data = HttpUtils.postWithCache("$API_NEW/song/detail?hash=${ids.hashCode()}",
+                val data = HttpUtils.postWithCache("${getDefaultApi()}/song/detail?hash=${ids.hashCode()}",
                     Utils.toMap("ids", ids), CompatSearchData::class.java, useCache)
-//                val data = HttpUtils.get("$API_NEW/song/detail?ids=${ids}", CompatSearchData::class.java)
+//                val data = HttpUtils.get("${getDefaultApi()}/song/detail?ids=${ids}", CompatSearchData::class.java)
                 data?.result?.apply {
                     if (code == CHEATING_CODE) {
                         toast("-460 Cheating")
@@ -85,13 +84,13 @@ object Api {
     }
 
     suspend fun searchMusic(keyword:String, type:SearchType): StandardSearchResult? {
-        val url = "$API_NEW/cloudsearch?keywords=$keyword&limit=100&type=${SearchType.getSearchTypeInt(type)}"
+        val url = "${getDefaultApi()}/cloudsearch?keywords=$keyword&limit=100&type=${SearchType.getSearchTypeInt(type)}"
         val result = HttpUtils.get(url, NeteaseSearchResult::class.java)
         return result?.result?.toStandardResult()
     }
 
     suspend fun getAlbumSongs(id:Long): StandardAlbumPackage? {
-        val url = "$API_NEW/album?id=${id}"
+        val url = "${getDefaultApi()}/album?id=${id}"
         HttpUtils.get(url, NeteaseAlbumResult::class.java)?.let {
             return StandardAlbumPackage(it.album.switchToStandard(), it.switchToStandardSongs())
         }
@@ -102,7 +101,7 @@ object Api {
         val songs = ArrayList<StandardSongData>()
         var result: ArtistsSongs?
         do {
-            val url = "$API_NEW/artist/songs?id=$id&offset=${songs.size}"
+            val url = "${getDefaultApi()}/artist/songs?id=$id&offset=${songs.size}"
             result = HttpUtils.get(url, ArtistsSongs::class.java, true)
             result?.let {
 //                Log.d(TAG, "getSingerSongs result${result.songs.size} ")
@@ -110,7 +109,7 @@ object Api {
             }
         } while (result?.more == true && result.songs.isNotEmpty())
 
-        HttpUtils.get("$API_NEW/artist/detail?id=$id", ArtistInfoResult::class.java, true)?.data?.artist?.let {
+        HttpUtils.get("${getDefaultApi()}/artist/detail?id=$id", ArtistInfoResult::class.java, true)?.data?.artist?.let {
             return StandardSingerPackage(it.switchToStandardSinger(), songs)
         }
         return null
@@ -268,6 +267,14 @@ object Api {
 
     private fun getLoginUrl() :String {
         return API_LOGIN
+    }
+
+    private fun getDefaultApi() :String {
+        var api = User.neteaseCloudMusicApi
+        if (api.isEmpty()) {
+            api = API_AUTU
+        }
+        return api
     }
 
 }
