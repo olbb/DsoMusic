@@ -36,10 +36,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
-        <activity android:name=".ui.activity.LocalMusicActivity"></activity>
+        <activity android:name=".ui.activity.LocalMusicActivity" />
         <activity android:name=".ui.activity.MemoryActivity" />
         <activity android:name=".ui.live.NeteaseCloudMusicApiActivity" />
         <activity
+
             android:name=".ui.playlist.SongSearchActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -90,7 +91,8 @@
             android:theme="@style/AppTheme.FullScreen" />
         <activity
             android:name=".ui.activity.SplashActivity"
-            android:theme="@style/AppTheme.FullScreen">
+            android:theme="@style/AppTheme.FullScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -113,13 +115,15 @@
 
         <service
             android:name=".service.MusicService"
-            android:exported="false">
+            android:exported="false"
+            android:stopWithTask="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </service>
 
-        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+        <receiver android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

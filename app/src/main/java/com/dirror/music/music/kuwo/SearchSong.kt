@@ -4,10 +4,11 @@ import android.net.Uri
 import android.util.Log
 import com.dirror.music.music.standard.data.SOURCE_KUWO
 import com.dirror.music.music.standard.data.StandardSongData
+import com.dirror.music.plugin.PluginConstants
+import com.dirror.music.plugin.PluginSupport
 import com.dirror.music.util.*
 import com.google.gson.Gson
 import org.json.JSONObject
-import java.lang.Exception
 
 /**
  * 搜索酷我音乐
@@ -120,13 +121,18 @@ object SearchSong {
      * 音质
      * 128 / 192 / 320
      */
-    suspend fun getUrl(rid: String) : String {
+    suspend fun getUrl(rid: String): String {
+        PluginSupport.setRid(rid)
+        val pluginUrl = PluginSupport.apply(PluginConstants.POINT_KUWO_URL)
+        if (pluginUrl != null && pluginUrl is String) {
+            return pluginUrl
+        }
         val id = rid.replace("MUSIC_", "")
         val url =
-            "http://www.kuwo.cn/url?format=mp3&rid=${id}&response=url&type=convert_url3&br=990kmp3&from=web&t=${getCurrentTime()}&httpsStatus=1"
+            "http://antiserver.kuwo.cn/anti.s?format=mp3&rid=${id}&response=url&type=convert_url3&br=320kmp3"
         loge("链接: $url")
         HttpUtils.get(url, KuwoUrlData::class.java)?.let {
-            return it.url
+            return it.url ?: ""
         }
         toast("获取链接失败")
         return ""
@@ -201,7 +207,7 @@ object SearchSong {
     }
 
     data class KuwoUrlData(
-        val url: String
+        val url: String?
     )
 
 }

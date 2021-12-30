@@ -2,9 +2,9 @@ package com.dirror.music.util
 
 import android.net.Uri
 import android.util.Log
+import com.dirror.music.api.API_AUTU
 import com.dirror.music.api.API_LOGIN
 import com.dirror.music.api.CloudMusicApi
-import com.dirror.music.api.API_AUTU
 import com.dirror.music.data.*
 import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
@@ -63,8 +63,11 @@ object Api {
                     idsBuilder.append(trackId)
                 }
                 val ids = idsBuilder.toString()
+                val params = HashMap<String, String>()
+                params["ids"] = ids
+                params["cookie"] = User.cookie
                 val data = HttpUtils.postWithCache("${getDefaultApi()}/song/detail?hash=${ids.hashCode()}",
-                    Utils.toMap("ids", ids), CompatSearchData::class.java, useCache)
+                    params, CompatSearchData::class.java, useCache)
 //                val data = HttpUtils.get("${getDefaultApi()}/song/detail?ids=${ids}", CompatSearchData::class.java)
                 data?.result?.apply {
                     if (code == CHEATING_CODE) {
@@ -272,7 +275,7 @@ object Api {
     private fun getDefaultApi() :String {
         var api = User.neteaseCloudMusicApi
         if (api.isEmpty()) {
-            api = API_AUTU
+            api = "https://olbb.vercel.app"
         }
         return api
     }

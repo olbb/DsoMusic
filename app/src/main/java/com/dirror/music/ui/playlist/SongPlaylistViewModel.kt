@@ -3,10 +3,10 @@ package com.dirror.music.ui.playlist
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dirror.music.data.SearchType
 import com.dirror.music.manager.User
 import com.dirror.music.music.local.MyFavorite
-import com.dirror.music.music.netease.Playlist
 import com.dirror.music.music.standard.data.StandardSongData
 import com.dirror.music.util.Api
 import com.dirror.music.util.runOnMainThread
@@ -133,11 +133,11 @@ class SongPlaylistViewModel : ViewModel() {
     }
 
     private fun getPlaylist(id: Long, useCache: Boolean) {
-        GlobalScope.launch {
+        viewModelScope.launch {
             Api.getPlayList(id, useCache).let { packed ->
                 withContext(Dispatchers.Main) {
                     if (packed.songs.isEmpty()) {
-                        toast("歌单内容获取失败")
+                        toast("歌单内容获取失败，尝试更换 NeteaseCloudMusicApi")
                     } else{
                         songList.value = packed.songs
                         Log.d(TAG, "getPlaylist finished, isCache:${packed.isCache}, size:${packed.songs.size}")

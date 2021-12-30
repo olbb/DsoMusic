@@ -24,6 +24,7 @@
 
 package com.dirror.music.service
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -73,22 +74,7 @@ import kotlin.coroutines.suspendCoroutine
  * @author Moriafly
  * @since 2020/9
  */
-open class MusicService : BaseMediaService() {
-
-    companion object {
-        private val TAG = this::class.java.simpleName
-
-        /* Flyme 状态栏歌词 TICKER 一直显示 */
-        private const val FLAG_ALWAYS_SHOW_TICKER = 0x1000000
-
-        /* 只更新 Flyme 状态栏歌词 */
-        private const val FLAG_ONLY_UPDATE_TICKER = 0x2000000
-
-        /* MSG 状态栏歌词 */
-        private const val MSG_STATUS_BAR_LYRIC = 0
-
-        private const val MEDIA_SESSION_PLAYBACK_SPEED = 1f
-    }
+class MusicService : BaseMediaService() {
 
     /* Dso Music 音乐控制器 */
     private val musicController by lazy { MusicController() }
@@ -171,22 +157,19 @@ open class MusicService : BaseMediaService() {
     private var isPausedByTransientLossOfFocus = false
 
     override fun onCreate() {
-        // 在 super.onCreate() 前
+        // 初始化通知管理
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager // 通知管理
-        super.onCreate()
-        updateNotification(false)
-    }
-
-    override fun initChannel() {
+        // 通知渠道
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel
-            val name = "Dso Music Notification"
-            val descriptionText = "Dso Music 音乐通知"
+            val name = "Dso Music 音乐通知"
+            val descriptionText = "用来显示音频控制器通知"
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             channel.description = descriptionText
             notificationManager?.createNotificationChannel(channel)
         }
+        super.onCreate()
+        updateNotification(false)
     }
 
     override fun initAudioFocus() {
@@ -788,29 +771,47 @@ open class MusicService : BaseMediaService() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun getPendingIntentActivity(): PendingIntent {
         val intentMain = Intent(this, MainActivity::class.java)
         val intentPlayer = Intent(this, PlayerActivity::class.java)
         val intents = arrayOf(intentMain, intentPlayer)
-        return PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 
     private fun getPendingIntentPrevious(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_PREVIOUS)
-        return PendingIntent.getService(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return buildServicePendingIntent(this, 2, intent)
     }
 
     private fun getPendingIntentPlay(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_PLAY)
-        return PendingIntent.getService(this, 3, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return buildServicePendingIntent(this, 3, intent)
     }
 
     private fun getPendingIntentNext(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_NEXT)
-        return PendingIntent.getService(this, 4, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return buildServicePendingIntent(this, 4, intent)
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun buildServicePendingIntent(context: Context, requestCode: Int, intent: Intent): PendingIntent {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+        }
     }
 
     /**
@@ -974,5 +975,20 @@ open class MusicService : BaseMediaService() {
         intent.putExtra("getDuration", musicController.getDuration().toString())//歌曲总毫秒
 //        intent.puLExtra("getArtwork", song.name)//封面文件路径
         sendBroadcast(intent)
+    }
+
+    companion object {
+        private val TAG = this::class.java.simpleName
+
+        /* Flyme 状态栏歌词 TICKER 一直显示 */
+        private const val FLAG_ALWAYS_SHOW_TICKER = 0x1000000
+
+        /* 只更新 Flyme 状态栏歌词 */
+        private const val FLAG_ONLY_UPDATE_TICKER = 0x2000000
+
+        /* MSG 状态栏歌词 */
+        private const val MSG_STATUS_BAR_LYRIC = 0
+
+        private const val MEDIA_SESSION_PLAYBACK_SPEED = 1f
     }
 }

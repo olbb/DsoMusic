@@ -1,8 +1,8 @@
 package com.dirror.music.service
 
-import android.util.Log
 import android.content.ContentUris
 import android.net.Uri
+import android.util.Log
 import com.dirror.music.App
 import com.dirror.music.data.LyricViewData
 import com.dirror.music.music.kuwo.SearchSong
@@ -10,6 +10,8 @@ import com.dirror.music.music.netease.SongUrl
 import com.dirror.music.music.qq.PlayUrl
 import com.dirror.music.music.standard.SearchLyric
 import com.dirror.music.music.standard.data.*
+import com.dirror.music.plugin.PluginConstants
+import com.dirror.music.plugin.PluginSupport
 import com.dirror.music.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,6 +36,12 @@ object ServiceSongUrl {
     }
 
     inline fun getUrl(song: StandardSongData, crossinline success: (Any?) -> Unit) {
+        PluginSupport.setSong(song)
+        val pluginUrl = PluginSupport.apply(PluginConstants.POINT_SONG_URL)
+        if (pluginUrl != null && pluginUrl is String) {
+            success.invoke(pluginUrl)
+            return
+        }
         when (song.source) {
             SOURCE_NETEASE -> {
                 GlobalScope.launch {
@@ -59,10 +67,14 @@ object ServiceSongUrl {
                                 song.type = res.format
                             }
                         }
-                        if (url.isEmpty()) url = SongUrl.getSongUrlN(song.id ?: "")
-                        withContext(Dispatchers.Main) {
-                            success.invoke(url)
-                        }
+                        if (url.isEmpty())
+                            SongUrl.getSongUrlCookie(song.id ?: "") {
+                                success.invoke(it)
+                            }
+                        else
+                            withContext(Dispatchers.Main) {
+                                success.invoke(url)
+                            }
                         song.fileSize = HttpUtils.getRemoteFileSize(url)
                     }
                 }
