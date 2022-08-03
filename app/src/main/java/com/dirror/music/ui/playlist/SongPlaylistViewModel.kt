@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dirror.music.data.SearchType
 import com.dirror.music.manager.User
+import com.dirror.music.music.kuwo.SearchSong
 import com.dirror.music.music.local.MyFavorite
 import com.dirror.music.music.standard.data.StandardSongData
 import com.dirror.music.util.Api
@@ -17,6 +18,7 @@ import kotlinx.coroutines.*
 const val TAG_LOCAL_MY_FAVORITE = 0
 const val TAG_NETEASE = 1
 const val TAG_NETEASE_MY_FAVORITE = 2
+const val TAG_KUWO = 3
 
 class SongPlaylistViewModel : ViewModel() {
 
@@ -94,6 +96,17 @@ class SongPlaylistViewModel : ViewModel() {
             TAG_LOCAL_MY_FAVORITE -> {
                 MyFavorite.read {
                     setSongList(it)
+                }
+            }
+            TAG_KUWO -> {//加载酷我歌单
+                playlistId.value?.toLong()?.let {
+                    viewModelScope.launch {
+                        var playlist = SearchSong.getPlaylist(it)
+                        setSongList(playlist.songList)
+                        playlistUrl.value = playlist.playlistUrl
+                        playlistTitle.value = playlist.playlistTitle
+                        playlistDescription.value = playlist.playlistDescription
+                    }
                 }
             }
         }

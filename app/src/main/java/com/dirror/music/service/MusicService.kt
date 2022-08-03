@@ -49,6 +49,7 @@ import com.dirror.music.App
 import com.dirror.music.App.Companion.context
 import com.dirror.music.App.Companion.mmkv
 import com.dirror.music.R
+import com.dirror.music.music.bilibili.BilibiliUrl
 import com.dirror.music.music.local.PlayHistory
 import com.dirror.music.music.netease.PersonalFM
 import com.dirror.music.music.standard.data.*
@@ -58,7 +59,7 @@ import com.dirror.music.ui.player.PlayerActivity
 import com.dirror.music.util.*
 import com.dirror.music.widget.FloatWidgetHelper
 import com.dso.ext.*
-import kotlinx.coroutines.Dispatchers
+import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -397,41 +398,51 @@ class MusicService : BaseMediaService() {
             // 初始化
             mediaPlayer.apply {
                 ServiceSongUrl.getUrlProxy(song) {
-                    if (it == null || it is String && it.isEmpty()) {
-                        if (playNext) {
-                            toast("当前歌曲不可用, 播放下一首")
-                            playNext()
+                    runOnMainThread {
+                        if (it == null || it is String && it.isEmpty()) {
+                            if (playNext) {
+                                toast("当前歌曲不可用, 播放下一首")
+                                playNext()
+                            }
+                            return@runOnMainThread
                         }
-                        return@getUrlProxy
-                    }
-                    when (it) {
-                        is String -> {
-                            if (!InternetState.isWifi(context) && !mmkv.decodeBool(
-                                    Config.PLAY_ON_MOBILE,
-                                    false
-                                )
-                            ) {
-                                toast("移动网络下已禁止播放，请在设置中打开选项（注意流量哦）")
-                                return@getUrlProxy
-                            } else {
-                                if (!recover) {
-                                    setDataSource(it)
-                                    prepareAsync()
+                        when (it) {
+                            is String -> {
+                                if (!InternetState.isWifi(context) && !mmkv.decodeBool(
+                                        Config.PLAY_ON_MOBILE,
+                                        false
+                                    )
+                                ) {
+                                    toast("移动网络下已禁止播放，请在设置中打开选项（注意流量哦）")
+                                    return@runOnMainThread
+                                } else {
+                                    try {
+                                        if(it.contains("bilivideo")){
+                                            val uri = Uri.parse(it)
+                                            Log.i("SETURL"," BILIBILIURL " + it + " " + Gson().toJson(BilibiliUrl.headers))
+                                            setDataSource(applicationContext, uri, BilibiliUrl.headers)
+                                        }else {
+                                            Log.i("SETURL"," NORMALURL " + it)
+                                            setDataSource(it)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("FYERROR", "error", e)
+                                        onError(mediaPlayer, -1, 0)
+                                        return@runOnMainThread
+                                    }
                                 }
                             }
-                            recover = false
-                        }
-                        is Uri -> {
-                            try {
-                                if (!recover) {
+                            is Uri -> {
+                                try {
                                     setDataSource(applicationContext, it)
-                                    prepareAsync()
+                                } catch (e: Exception) {
+                                    onError(mediaPlayer, -1, 0)
+                                    return@runOnMainThread
                                 }
-                            } catch (e: Exception) {
-                                onError(mediaPlayer, -1, 0)
-                                return@getUrlProxy
                             }
-                            recover = false
+                            else -> {
+                                return@runOnMainThread
+                            }
                         }
                     }
                     setOnPreparedListener(this@MusicController) // 歌曲准备完成的监听

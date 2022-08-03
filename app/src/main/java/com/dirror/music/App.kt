@@ -65,7 +65,7 @@ class App : MultiDexApplication() {
         context = applicationContext
         // MMKV 初始化
         MMKV.initialize(context)
-        mmkv = MMKV.defaultMMKV()
+        mmkv = MMKV.defaultMMKV()!!
         // 管理初始化
         activityManager = ActivityManager()
         cloudMusicManager = CloudMusicManager()

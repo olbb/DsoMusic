@@ -89,7 +89,6 @@ object HttpUtils {
             realUrl = request.url().toString()
             val response = client.newCall(request).execute()
             str = response.body()?.string()
-            println("str:\n$str")
             result = if (clazz == String::class.java) {
                 str as? T
             } else{
@@ -207,14 +206,13 @@ object HttpUtils {
                 Log.d(TAG, "post $url , params:${params}, response:$str")
             }
             result = gson.fromJson(str, clazz)
-            isCache = response.networkResponse() == null
         } catch (e:JsonSyntaxException) {
             Log.w(TAG, "json parse failed, $e")
         } catch (e: Exception) {
             Log.w(TAG, "post failed:${e} ,url:$url")
             e.printStackTrace()
         }
-        Log.d(TAG, "post $url cost: ${System.currentTimeMillis() - time} ms, isCache:$isCache")
+        Log.d(TAG, "post $url cost: ${System.currentTimeMillis() - time} ms")
         return@withContext result
     }
 

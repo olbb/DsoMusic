@@ -99,7 +99,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <activity android:name=".ui.activity.MorePlayListActivity"
             android:theme="@style/AppTheme.FullScreen"/>
 
@@ -116,7 +116,8 @@
         <service
             android:name=".service.MusicService"
             android:exported="false"
-            android:stopWithTask="true">
+            android:stopWithTask="true"
+            android:foregroundServiceType="mediaPlayback">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

@@ -25,17 +25,29 @@ class CloudMusicManager {
     }
 
     fun getComment(id: String, success: (CommentData) -> Unit, failure: () -> Unit) {
-        val url = "$API_MUSIC_ELEUU/comment/music?id=${id}&limit=20&offset=0${timestamp()}"
+        val url = "$API_AUTU/comment/music?id=${id}&limit=20&offset=0${timestamp()}&cookie=${AppConfig.cookie}"
         MagicHttp.OkHttpManager().newGet(url, {
-            val commentData = Gson().fromJson(it, CommentData::class.java)
-            success.invoke(commentData)
+            try {
+                Log.d("Comment", it)
+                val commentData = Gson().fromJson(it, CommentData::class.java)
+                if (commentData.code != 200) {
+                    toast("根据网易云音乐的调整，Dso Music 需要登录后才能获取评论")
+                    failure()
+                } else {
+                    success(commentData)
+                }
+            } catch (e: Exception) {
+                Log.e("Comment", e.message.toString())
+                toast("获取失败或者未登录，根据网易云音乐的调整，Dso Music 需要登录后才能获取评论")
+                failure()
+            }
         }, {
 
         })
     }
 
     fun getUserDetail(userId: Long, success: (UserDetailData) -> Unit, failure: () -> Unit) {
-        val url = "${API_AUTU}/user/detail?uid=${userId}"
+        val url = "${User.neteaseCloudMusicApi}/user/detail?uid=${userId}"
         MagicHttp.OkHttpManager().newGet(url, {
             try {
                 val userDetail = Gson().fromJson(it, UserDetailData::class.java)
@@ -77,7 +89,7 @@ class CloudMusicManager {
     }
 
     fun likeSong(songId: String, success: () -> Unit, failure: () -> Unit) {
-        val cookie = User.cookie
+        val cookie = AppConfig.cookie
         val url = "${API_DSO}/like?id=${songId}&cookie=${cookie}"
         MagicHttp.OkHttpManager().newGet(url, {
             try {
@@ -113,14 +125,14 @@ class CloudMusicManager {
         success: (CodeData) -> Unit,
         failure: () -> Unit
     ) {
-        val cookie = User.cookie
+        val cookie = AppConfig.cookie
         var url = "${API_DEFAULT}/comment?t=${t}&type=${type}&id=${id}&content=${content}&cookie=${cookie}"
         if (commentId != 0L) {
             url += "&commentId=${commentId}"
         }
         MagicHttp.OkHttpManager().newGet(url, {
             try {
-                loge("评论返回" + it)
+                loge("评论返回$it")
                 val codeData = Gson().fromJson(it, CodeData::class.java)
                 if (codeData.code != 200) {
                     failure.invoke()
@@ -136,7 +148,7 @@ class CloudMusicManager {
     }
 
     fun getPrivateLetter(success: (PrivateLetterData) -> Unit, failure: () -> Unit) {
-        val cookie = User.cookie
+        val cookie = AppConfig.cookie
         val url = "${URL_PRIVATE_LETTER}?cookie=${cookie}"
         MagicHttp.OkHttpManager().newGet(url, {
             try {
@@ -235,7 +247,7 @@ class CloudMusicManager {
         getUserDetail(uid, {
             App.mmkv.encode(Config.UID, it.profile?.userId!!.toLong())
             // UID 登录清空 Cookie
-            User.cookie = ""
+            AppConfig.cookie = ""
             success.invoke()
             // toast("登录成功${it.profile?.userId!!.toLong()}")
         }, {

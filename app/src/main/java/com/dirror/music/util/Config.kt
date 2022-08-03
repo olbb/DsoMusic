@@ -113,6 +113,9 @@ object Config {
     //是否自动换源播放
     const val AUTO_CHANGE_RESOURCE = "boolean_auto_change_resource"
 
+    // 是否精细化调节音乐音量
+    const val FINE_TUNING = "boolean_fine_tuning"
+
     //是否开机后自动启动
     const val AUTO_START_ON_BOOT_UP = "boolean_auto_start_on_boot_up"
 

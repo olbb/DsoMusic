@@ -28,6 +28,7 @@ import androidx.annotation.Keep
 import androidx.lifecycle.ViewModel
 import com.dirror.music.manager.User
 import com.dirror.music.music.netease.data.UserDetailData
+import com.dirror.music.util.AppConfig
 import com.dirror.music.util.EMPTY
 import com.dirror.music.util.ErrorCode
 import com.dirror.music.util.HttpUtils
@@ -64,7 +65,7 @@ class LoginCellphoneViewModel : ViewModel() {
                 HttpUtils.loginPost("${api}/login/cellphone", map, UserDetailData::class.java)
             if (userDetail != null && userDetail.code == 200) {
                 User.apply {
-                    cookie = userDetail.cookie ?: String.EMPTY
+                    AppConfig.cookie = userDetail.cookie ?: String.EMPTY
                     uid = userDetail.profile.userId
                     vipType = userDetail.profile.vipType
                 }
