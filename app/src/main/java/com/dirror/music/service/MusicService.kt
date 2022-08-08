@@ -62,7 +62,6 @@ import com.dso.ext.*
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.lang.IllegalStateException
@@ -77,6 +76,21 @@ import kotlin.coroutines.suspendCoroutine
  * @since 2020/9
  */
 class MusicService : BaseMediaService() {
+
+    companion object {
+        private val TAG = this::class.java.simpleName
+
+        /* Flyme 状态栏歌词 TICKER 一直显示 */
+        private const val FLAG_ALWAYS_SHOW_TICKER = 0x1000000
+
+        /* 只更新 Flyme 状态栏歌词 */
+        private const val FLAG_ONLY_UPDATE_TICKER = 0x2000000
+
+        /* MSG 状态栏歌词 */
+        private const val MSG_STATUS_BAR_LYRIC = 0
+
+        private const val MEDIA_SESSION_PLAYBACK_SPEED = 1f
+    }
 
     /* Dso Music 音乐控制器 */
     private val musicController by lazy { MusicController() }
@@ -159,19 +173,22 @@ class MusicService : BaseMediaService() {
     private var isPausedByTransientLossOfFocus = false
 
     override fun onCreate() {
-        // 初始化通知管理
+        // 在 super.onCreate() 前
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager // 通知管理
-        // 通知渠道
+        super.onCreate()
+        updateNotification(false)
+    }
+
+    override fun initChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Dso Music 音乐通知"
-            val descriptionText = "用来显示音频控制器通知"
+            // Create the NotificationChannel
+            val name = "Dso Music Notification"
+            val descriptionText = "Dso Music 音乐通知"
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             channel.description = descriptionText
             notificationManager?.createNotificationChannel(channel)
         }
-        super.onCreate()
-        updateNotification(false)
     }
 
     override fun initAudioFocus() {
@@ -423,6 +440,7 @@ class MusicService : BaseMediaService() {
                                             Log.i("SETURL"," BILIBILIURL " + it + " " + Gson().toJson(BilibiliUrl.headers))
                                             try {
                                                 setDataSource(applicationContext, uri, BilibiliUrl.headers)
+                                                prepareAsync()
                                             } catch (e:IllegalStateException) {
                                                 e.printStackTrace()
                                                 playNext()
@@ -431,9 +449,11 @@ class MusicService : BaseMediaService() {
                                             Log.i("SETURL", " NORMALURL $it thread:${Thread.currentThread()}")
                                             try {
                                                 setDataSource(it)
+                                                prepareAsync()
                                             } catch (e:IllegalStateException) {
-                                                e.printStackTrace()
-                                                playNext()
+                                                Log.e("FYERROR", "error", e)
+                                                onError(mediaPlayer, -1, 0)
+                                                return@runOnMainThread
                                             }
 
                                         }
@@ -447,6 +467,7 @@ class MusicService : BaseMediaService() {
                             is Uri -> {
                                 try {
                                     setDataSource(applicationContext, it)
+                                    prepareAsync()
                                 } catch (e: Exception) {
                                     onError(mediaPlayer, -1, 0)
                                     return@runOnMainThread
@@ -809,32 +830,19 @@ class MusicService : BaseMediaService() {
     private fun getPendingIntentPrevious(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_PREVIOUS)
-        return buildServicePendingIntent(this, 2, intent)
+        return PendingIntent.getService(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun getPendingIntentPlay(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_PLAY)
-        return buildServicePendingIntent(this, 3, intent)
+        return PendingIntent.getService(this, 3, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun getPendingIntentNext(): PendingIntent {
         val intent = Intent(this, MusicService::class.java)
         intent.putExtra("int_code", CODE_NEXT)
-        return buildServicePendingIntent(this, 4, intent)
-    }
-
-    @SuppressLint("UnspecifiedImmutableFlag")
-    private fun buildServicePendingIntent(context: Context, requestCode: Int, intent: Intent): PendingIntent {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            }
-        }
+        return PendingIntent.getService(this, 4, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     /**
@@ -998,20 +1006,5 @@ class MusicService : BaseMediaService() {
         intent.putExtra("getDuration", musicController.getDuration().toString())//歌曲总毫秒
 //        intent.puLExtra("getArtwork", song.name)//封面文件路径
         sendBroadcast(intent)
-    }
-
-    companion object {
-        private val TAG = this::class.java.simpleName
-
-        /* Flyme 状态栏歌词 TICKER 一直显示 */
-        private const val FLAG_ALWAYS_SHOW_TICKER = 0x1000000
-
-        /* 只更新 Flyme 状态栏歌词 */
-        private const val FLAG_ONLY_UPDATE_TICKER = 0x2000000
-
-        /* MSG 状态栏歌词 */
-        private const val MSG_STATUS_BAR_LYRIC = 0
-
-        private const val MEDIA_SESSION_PLAYBACK_SPEED = 1f
     }
 }

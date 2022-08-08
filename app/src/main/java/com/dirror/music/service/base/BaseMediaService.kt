@@ -33,6 +33,7 @@ abstract class BaseMediaService: Service() {
 
     override fun onCreate() {
         super.onCreate()
+        initChannel()
         initMediaSession()
         initAudioFocus()
     }
@@ -41,6 +42,13 @@ abstract class BaseMediaService: Service() {
      * 初始化媒体会话 MediaSession
      */
     open fun initMediaSession() {
+
+    }
+
+    /**
+     * 初始化通道
+     */
+    open fun initChannel() {
 
     }
 
