@@ -74,7 +74,7 @@ object HttpUtils {
         var realUrl = url
         var iscache = false
         try {
-//            Log.d(TAG, "start get $url , thread:${Thread.currentThread()}")
+            Log.d(TAG, "start get $url , thread:${Thread.currentThread()}")
             val urlBuilder = HttpUrl.parse(url)?.newBuilder()?.addQueryParameter("realIP", App.realIP)
             val requestBuilder = Request.Builder().get().cacheControl(cacheControl)
             if (urlBuilder == null) {
@@ -101,7 +101,7 @@ object HttpUtils {
             Log.w(TAG, "get failed:${e} ,url:$realUrl")
             e.printStackTrace()
         }
-        Log.d(TAG, "post $realUrl finished, cost: ${System.currentTimeMillis() - time} ms , isCache:${iscache}")
+        Log.d(TAG, "post $realUrl finished, cost: ${System.currentTimeMillis() - time} ms , isCache:${iscache} , str:${str}")
         return@withContext result
     }
 

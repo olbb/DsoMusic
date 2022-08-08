@@ -60,7 +60,7 @@ object ServiceSongUrl {
                         var url = ""
                         Api.getFromKuWo(song, true)?.let { kuwo ->
                             Log.d(TAG, "search from kuwo get $kuwo")
-                            val res = SearchSong.getUrlKW(kuwo.id?:"")
+                            val res = SearchSong.getUrlKW(kuwo.id ?: "")
                             url = res.url
                             if (url.isNotEmpty()) {
                                 toast("替换酷我无损[${kuwo.name}-${getArtistName(kuwo.artists)}]成功")
@@ -68,15 +68,20 @@ object ServiceSongUrl {
                                 song.type = res.format
                             }
                         }
-                        if (url.isEmpty())
+                        if (url.isEmpty()) {
                             SongUrl.getSongUrlCookie(song.id ?: "") {
                                 success.invoke(it)
                             }
-                        else
+                        } else {
                             withContext(Dispatchers.Main) {
                                 success.invoke(url)
                             }
-                        song.fileSize = HttpUtils.getRemoteFileSize(url)
+                            try {
+                                song.fileSize = HttpUtils.getRemoteFileSize(url)
+                            } catch (t : Throwable) {
+                                t.printStackTrace()
+                            }
+                        }
                     }
                 }
             }

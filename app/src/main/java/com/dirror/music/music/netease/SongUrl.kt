@@ -1,5 +1,7 @@
 package com.dirror.music.music.netease
 
+import android.util.Log
+import com.dirror.music.App
 import com.dirror.music.api.API_AUTU
 import com.dirror.music.manager.User
 import com.dirror.music.music.dirror.SearchSong
@@ -31,11 +33,12 @@ object SongUrl {
             .add("crypto", "api")
             .add("cookie", AppConfig.cookie)
             .add("withCredentials", "true")
-            .add("realIP", "211.161.244.70")
+            .add("realIP", App.realIP)
             .add("id", id)
             .build()
         MagicHttp.OkHttpManager().newPost("${api}/song/url", requestBody, {
             try {
+                Log.d("SongUrl", "getSongUrlCookie result: $it")
                 val songUrlData = Gson().fromJson(it, SongUrlData::class.java)
                 success.invoke(songUrlData.data[0].url ?: "")
             } catch (e: Exception) {

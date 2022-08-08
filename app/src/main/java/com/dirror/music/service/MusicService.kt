@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -420,10 +421,21 @@ class MusicService : BaseMediaService() {
                                         if(it.contains("bilivideo")){
                                             val uri = Uri.parse(it)
                                             Log.i("SETURL"," BILIBILIURL " + it + " " + Gson().toJson(BilibiliUrl.headers))
-                                            setDataSource(applicationContext, uri, BilibiliUrl.headers)
+                                            try {
+                                                setDataSource(applicationContext, uri, BilibiliUrl.headers)
+                                            } catch (e:IllegalStateException) {
+                                                e.printStackTrace()
+                                                playNext()
+                                            }
                                         }else {
-                                            Log.i("SETURL"," NORMALURL " + it)
-                                            setDataSource(it)
+                                            Log.i("SETURL", " NORMALURL $it thread:${Thread.currentThread()}")
+                                            try {
+                                                setDataSource(it)
+                                            } catch (e:IllegalStateException) {
+                                                e.printStackTrace()
+                                                playNext()
+                                            }
+
                                         }
                                     } catch (e: Exception) {
                                         Log.e("FYERROR", "error", e)
