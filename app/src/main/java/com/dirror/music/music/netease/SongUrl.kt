@@ -6,6 +6,7 @@ import com.dirror.music.api.API_AUTU
 import com.dirror.music.manager.User
 import com.dirror.music.music.dirror.SearchSong
 import com.dirror.music.music.netease.data.SongUrlData
+import com.dirror.music.util.Api
 import com.dirror.music.util.AppConfig
 import com.dirror.music.util.HttpUtils
 import com.dirror.music.util.MagicHttp
@@ -25,10 +26,7 @@ object SongUrl {
     }
 
     fun getSongUrlCookie(id: String, success: (String) -> Unit) {
-        var api = User.neteaseCloudMusicApi
-        if (api.isEmpty()) {
-            api = "https://olbb.vercel.app"
-        }
+        val api = Api.getDefaultApi()
         val requestBody = FormBody.Builder()
             .add("crypto", "api")
             .add("cookie", AppConfig.cookie)

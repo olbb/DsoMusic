@@ -33,6 +33,7 @@ import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.viewModels
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
@@ -49,7 +50,6 @@ import com.dirror.music.ui.base.BaseActivity
 import com.dirror.music.ui.main.viewmodel.MainViewModel
 import com.dirror.music.util.*
 import com.dirror.music.util.cache.ACache
-import com.dirror.music.util.dp
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.google.android.material.tabs.TabLayoutMediator
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -92,13 +92,19 @@ class MainActivity : BaseActivity() {
             }
             mainViewModel.statusBarHeight.value = statusBarH
         }
-        binding.composeViewMenu.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                AppCompatTheme {
-                    MainMenu(this@MainActivity, mainViewModel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val menu = binding.root.findViewById<ComposeView>(R.id.mainMenu)
+            menu.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    AppCompatTheme {
+                        MainMenu(this@MainActivity, mainViewModel)
+                    }
                 }
             }
+        } else {
+            val menu = binding.root.findViewById<View>(R.id.mainMenu)
+            Android4Util.initMenuAndroid4(menu, this)
         }
         miniPlayer = binding.miniPlayer
         setContentView(binding.root)

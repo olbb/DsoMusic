@@ -22,7 +22,14 @@
     <!--Android 4.4以上用此权限-->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
-    <uses-sdk tools:overrideLibrary="tv.danmaku.ijk.media.player_arm64,tv.danmaku.ijk.media.player_x86"/>
+    <uses-sdk tools:overrideLibrary="tv.danmaku.ijk.media.player_arm64,tv.danmaku.ijk.media.player_x86,
+        com.google.accompanist.appcompattheme,androidx.compose.material,androidx.compose.material.ripple,
+        androidx.compose.foundation,androidx.lifecycle.viewmodel.compose,androidx.compose.runtime.livedata,
+        androidx.compose.animation,androidx.compose.foundation.layout,androidx.compose.material.icons,
+        androidx.compose.material.icons,androidx.compose.animation.core,androidx.compose.ui,androidx.compose.ui.text,
+        androidx.compose.runtime.saveable,androidx.compose.ui.graphics,androidx.compose.ui.unit,androidx.compose.ui.geometry,
+        androidx.compose.ui.util" />
+
 
     <application
         android:name=".App"

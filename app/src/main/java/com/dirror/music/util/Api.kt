@@ -1,6 +1,7 @@
 package com.dirror.music.util
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.dirror.music.api.API_AUTU
 import com.dirror.music.api.API_LOGIN
@@ -269,13 +270,17 @@ object Api {
     }
 
     private fun getLoginUrl() :String {
-        return API_LOGIN
+        return getDefaultApi()
     }
 
-    private fun getDefaultApi() :String {
+    fun getDefaultApi() :String {
         var api = User.neteaseCloudMusicApi
         if (api.isEmpty()) {
-            api = "https://olbb.vercel.app"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                api = "https://music.v2me.ml"
+            } else{
+                api = "http://music.v2me.ml"
+            }
         }
         return api
     }

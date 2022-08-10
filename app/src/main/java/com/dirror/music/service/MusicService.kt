@@ -411,8 +411,6 @@ class MusicService : BaseMediaService() {
             mmkv.encode(Config.SERVICE_CURRENT_SONG, song)
             Log.e(TAG, "onDestroy: 成功保存歌曲恢复到 mmkv：${song.name}")
 
-            // MediaPlayer 重置
-            mediaPlayer.reset()
             // 初始化
             mediaPlayer.apply {
                 ServiceSongUrl.getUrlProxy(song) {
@@ -439,6 +437,7 @@ class MusicService : BaseMediaService() {
                                             val uri = Uri.parse(it)
                                             Log.i("SETURL"," BILIBILIURL " + it + " " + Gson().toJson(BilibiliUrl.headers))
                                             try {
+                                                mediaPlayer.reset()
                                                 setDataSource(applicationContext, uri, BilibiliUrl.headers)
                                                 prepareAsync()
                                             } catch (e:IllegalStateException) {
@@ -448,10 +447,11 @@ class MusicService : BaseMediaService() {
                                         }else {
                                             Log.i("SETURL", " NORMALURL $it thread:${Thread.currentThread()}")
                                             try {
+                                                mediaPlayer.reset()
                                                 setDataSource(it)
                                                 prepareAsync()
                                             } catch (e:IllegalStateException) {
-                                                Log.e("FYERROR", "error", e)
+                                                e.printStackTrace()
                                                 onError(mediaPlayer, -1, 0)
                                                 return@runOnMainThread
                                             }
@@ -466,6 +466,7 @@ class MusicService : BaseMediaService() {
                             }
                             is Uri -> {
                                 try {
+                                    mediaPlayer.reset()
                                     setDataSource(applicationContext, it)
                                     prepareAsync()
                                 } catch (e: Exception) {

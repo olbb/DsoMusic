@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         applicationId "com.dirror.music"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 32
         versionCode 760
         versionName "3.14.1"

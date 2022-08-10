@@ -4,6 +4,7 @@ import android.util.Log
 import com.dirror.music.api.API_AUTU
 import com.dirror.music.manager.User
 import com.dirror.music.music.netease.data.UserCloudData
+import com.dirror.music.util.Api
 import com.dirror.music.util.AppConfig
 import com.dirror.music.util.ErrorCode
 import com.dirror.music.util.MagicHttp
@@ -29,10 +30,7 @@ object UserCloud {
             .add("limit", "50")
             .add("offset", "$offset")
             .build()
-        var api = User.neteaseCloudMusicApi
-        if (api.isEmpty()) {
-            api = "https://olbb.vercel.app"
-        }
+        val api = Api.getDefaultApi()
         MagicHttp.OkHttpManager().newPost("${api}/user/cloud", requestBody, {
             // Log.e(TAG, "getUserCloud: $it", )
             try {
