@@ -15,6 +15,7 @@ import com.dirror.music.ui.main.MainActivity
 import com.dirror.music.ui.player.PlayerActivity
 import com.dirror.music.util.Api
 import com.dirror.music.util.Config
+import com.google.gson.Gson
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.enums.SidePattern
@@ -42,17 +43,25 @@ class FloatWidgetHelper {
             }
         }
 
+        const val KEY_FLOAT_WIDGET_LOC_STR = "KEY_FLOAT_WIDGET_LOC_STR"
+
 
         fun initWidget() {
             if (!App.mmkv.decodeBool(Config.FLOAT_PLAY_INFO)) {
                 EasyFloat.dismiss()
                 return
             }
+            val locStr = App.mmkv.decodeString(KEY_FLOAT_WIDGET_LOC_STR, "")
+            var loc = IntArray(2)
+            if (locStr?.isNotEmpty() == true) {
+                loc = Gson().fromJson(locStr, IntArray::class.java)
+            }
             Log.i(TAG, "initWidget")
             EasyFloat.with(App.context).setLayout(R.layout.float_widget)
                 .setShowPattern(ShowPattern.BACKGROUND)
                 .setDragEnable(true)
                 .setSidePattern(SidePattern.RESULT_SIDE)
+                .setLocation(loc[0], loc[1])
                 .registerCallback {
                     createResult { isCreated, msg, view ->
                         Log.d(TAG, "createResult: $isCreated $msg")
@@ -75,7 +84,11 @@ class FloatWidgetHelper {
                     }
                     touchEvent { view, motionEvent ->  }
                     drag { view, motionEvent ->  }
-                    dragEnd {  }
+                    dragEnd {
+                        val loc = IntArray(2)
+                        it.getLocationOnScreen(loc)
+                        App.mmkv.encode(KEY_FLOAT_WIDGET_LOC_STR, Gson().toJson(loc))
+                    }
                 }
                 .show()
         }
