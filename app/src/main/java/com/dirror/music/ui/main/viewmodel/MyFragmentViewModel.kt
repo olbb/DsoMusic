@@ -7,10 +7,7 @@ import com.dirror.music.api.API_MUSIC_ELEUU
 import com.dirror.music.data.PlaylistData
 import com.dirror.music.data.UserPlaylistData
 import com.dirror.music.manager.User
-import com.dirror.music.util.AppConfig
-import com.dirror.music.util.HttpUtils
-import com.dirror.music.util.Utils
-import com.dirror.music.util.toast
+import com.dirror.music.util.*
 import com.dso.ext.toArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +29,7 @@ class MyFragmentViewModel : ViewModel() {
         if (User.uid != 0L) {
             val uid = User.uid.toString()
             viewModelScope.launch {
-                HttpUtils.get("${User.neteaseCloudMusicApi}/user/playlist?uid=$uid&cookie=${AppConfig.cookie}", UserPlaylistData::class.java, useCache)?.apply {
+                HttpUtils.get("${Api.getDefaultApi()}/user/playlist?uid=$uid&cookie=${AppConfig.cookie}", UserPlaylistData::class.java, useCache)?.apply {
                     withContext(Dispatchers.Main) {
                         userPlaylistList.value = playlist.toArrayList()
                     }

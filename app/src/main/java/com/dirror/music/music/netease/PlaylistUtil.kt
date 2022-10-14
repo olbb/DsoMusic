@@ -9,10 +9,7 @@ import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
 import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
 import com.dirror.music.music.standard.data.StandardSongData
-import com.dirror.music.util.AppConfig
-import com.dirror.music.util.MagicHttp
-import com.dirror.music.util.loge
-import com.dirror.music.util.toast
+import com.dirror.music.util.*
 import com.google.gson.Gson
 
 object PlaylistUtil {
@@ -86,7 +83,7 @@ object PlaylistUtil {
      * 获取歌单信息
      */
     fun getPlaylistInfo(context: Context, id: Long, success: (DetailPlaylistInnerData) -> Unit) {
-        val url = "$API_AUTU/playlist/detail?id=$id&cookie=${AppConfig.cookie}"
+        val url = "${Api.getDefaultApi()}/playlist/detail?id=$id&cookie=${AppConfig.cookie}"
         Log.i(TAG, "获取歌单信息 $url")
         MagicHttp.OkHttpManager().getByCache(context, url, { response ->
             try {

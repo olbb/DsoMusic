@@ -121,4 +121,7 @@ object Config {
 
     //是否悬浮显示播放信息
     const val FLOAT_PLAY_INFO = "boolean_show_float_play_info"
+
+    //是否更新仪表盘
+    const val BIND_LYNKCO_SERVICE = "bind_lynkco_service"
 }

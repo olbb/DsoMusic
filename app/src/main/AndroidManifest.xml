@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
     <uses-sdk tools:overrideLibrary="tv.danmaku.ijk.media.player_arm64,tv.danmaku.ijk.media.player_x86,
+        tv.danmaku.ijk.media.player_x86_64,
         com.google.accompanist.appcompattheme,androidx.compose.material,androidx.compose.material.ripple,
         androidx.compose.foundation,androidx.lifecycle.viewmodel.compose,androidx.compose.runtime.livedata,
         androidx.compose.animation,androidx.compose.foundation.layout,androidx.compose.material.icons,

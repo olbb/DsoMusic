@@ -2,7 +2,6 @@ package com.dirror.music.music.netease
 
 import android.util.Log
 import com.dirror.music.App
-import com.dirror.music.api.API_AUTU
 import com.dirror.music.manager.User
 import com.dirror.music.music.dirror.SearchSong
 import com.dirror.music.music.netease.data.SongUrlData
@@ -15,7 +14,7 @@ import okhttp3.FormBody
 
 object SongUrl {
 
-    const val API = "${API_AUTU}/song/url?id=33894312"
+    val API = "${Api.getDefaultApi()}/song/url?id=33894312"
 
     fun getSongUrl(id: String): String {
         return if (SearchSong.getDirrorSongUrl(id) != "") {
@@ -48,7 +47,7 @@ object SongUrl {
     }
 
     suspend fun getSongUrlN(id: String): String {
-        val url = "$API_AUTU/song/url?id=$id"
+        val url = "${Api.getDefaultApi()}/song/url?id=$id"
         val result = HttpUtils.get(url, SongUrlData::class.java)
         return result?.data?.get(0)?.url ?: getSongUrl(id)
     }

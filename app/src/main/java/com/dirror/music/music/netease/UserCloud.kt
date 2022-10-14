@@ -1,8 +1,5 @@
 package com.dirror.music.music.netease
 
-import android.util.Log
-import com.dirror.music.api.API_AUTU
-import com.dirror.music.manager.User
 import com.dirror.music.music.netease.data.UserCloudData
 import com.dirror.music.util.Api
 import com.dirror.music.util.AppConfig
@@ -19,7 +16,7 @@ object UserCloud {
     private const val TAG = "UserCloud"
 
     private const val API = "https://music.163.com/api/v1/cloud/get"
-    private const val TEST_API = "${API_AUTU}/user/cloud"
+    private val TEST_API = "${Api.getDefaultApi()}/user/cloud"
 
     fun getUserCloud(offset: Int, success: (UserCloudData) -> Unit, failure: (Int) -> Unit) {
         val requestBody = FormBody.Builder()

@@ -1,10 +1,9 @@
 package com.dirror.music.music.netease
 
-import com.dirror.music.api.API_AUTU
-import com.dirror.music.manager.User
 import com.dirror.music.music.netease.data.PersonFMData
 import com.dirror.music.music.netease.data.toSongList
 import com.dirror.music.music.standard.data.StandardSongData
+import com.dirror.music.util.Api
 import com.dirror.music.util.AppConfig
 import com.dirror.music.util.ErrorCode
 import com.dirror.music.util.MagicHttp
@@ -20,7 +19,7 @@ import kotlin.Exception
 object PersonalFM {
 
     private const val API = "https://music.163.com/api/v1/radio/get"
-    private const val TEST_API = "$API_AUTU/personal_fm"
+    private val TEST_API = "${Api.getDefaultApi()}/personal_fm"
 
     /**
      * 获取 私人 FM

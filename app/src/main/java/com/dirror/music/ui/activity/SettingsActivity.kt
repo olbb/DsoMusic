@@ -82,6 +82,7 @@ class SettingsActivity : BaseActivity() {
             switcherAutoChangeResource.setChecked(mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE, false))
             switchStartOnBootUp.setChecked(mmkv.decodeBool(Config.AUTO_START_ON_BOOT_UP, false))
             switcherShowFloatWidget.setChecked(mmkv.decodeBool(Config.FLOAT_PLAY_INFO), false)
+            switcherBindLynkcoService.setChecked(mmkv.decodeBool(Config.BIND_LYNKCO_SERVICE), false)
         }
 
     }
@@ -182,6 +183,8 @@ class SettingsActivity : BaseActivity() {
             switcherAutoChangeResource.setOnCheckedChangeListener { mmkv.encode(Config.AUTO_CHANGE_RESOURCE, it) }
 
             switchStartOnBootUp.setOnCheckedChangeListener { mmkv.encode(Config.AUTO_START_ON_BOOT_UP, it) }
+
+            switcherBindLynkcoService.setOnCheckedChangeListener { mmkv.encode(Config.BIND_LYNKCO_SERVICE, it) }
 
             switcherShowFloatWidget.setOnCheckedChangeListener {
                 mmkv.encode(Config.FLOAT_PLAY_INFO, it)

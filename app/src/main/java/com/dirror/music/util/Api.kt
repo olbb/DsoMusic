@@ -3,8 +3,6 @@ package com.dirror.music.util
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import com.dirror.music.api.API_AUTU
-import com.dirror.music.api.API_LOGIN
 import com.dirror.music.api.CloudMusicApi
 import com.dirror.music.data.*
 import com.dirror.music.manager.User
@@ -245,12 +243,12 @@ object Api {
 
     suspend fun likeSong(like: Boolean, id: String): CodeData? {
         val params = Utils.toMap("id", id, "cookie", User.cookie, "like", like.toString())
-        return HttpUtils.post("$API_LOGIN/like?timestamp=${Date().time}", params, CodeData::class.java)
+        return HttpUtils.post("${getDefaultApi()}/like?timestamp=${Date().time}", params, CodeData::class.java)
     }
 
     suspend fun subscribePlaylist(like: Boolean, id: String) : CodeData? {
         val params = Utils.toMap("id", id, "cookie", User.cookie, "t", if (like) "1" else "2")
-        return HttpUtils.post("$API_LOGIN/playlist/subscribe?timestamp=${Date().time}", params, CodeData::class.java)
+        return HttpUtils.post("${getDefaultApi()}/playlist/subscribe?timestamp=${Date().time}", params, CodeData::class.java)
     }
 
     suspend fun getLoginKey(): NeteaseGetKey? {

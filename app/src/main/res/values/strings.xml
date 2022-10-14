@@ -136,4 +136,5 @@
     <string name="clear_http_cache">清除本地歌单缓存</string>
     <string name="view_more_songs_by_singer">歌手的其它歌曲</string>
     <string name="search_playlist_include_song">包含这首歌的歌单</string>
+    <string name="bind_lynkco_service">更新LynkCo仪表盘</string>
 </resources>

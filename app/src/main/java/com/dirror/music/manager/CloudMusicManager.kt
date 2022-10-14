@@ -25,7 +25,7 @@ class CloudMusicManager {
     }
 
     fun getComment(id: String, success: (CommentData) -> Unit, failure: () -> Unit) {
-        val url = "$API_AUTU/comment/music?id=${id}&limit=20&offset=0${timestamp()}&cookie=${AppConfig.cookie}"
+        val url = "${Api.getDefaultApi()}/comment/music?id=${id}&limit=20&offset=0${timestamp()}&cookie=${AppConfig.cookie}"
         MagicHttp.OkHttpManager().newGet(url, {
             try {
                 Log.d("Comment", it)
@@ -47,7 +47,7 @@ class CloudMusicManager {
     }
 
     fun getUserDetail(userId: Long, success: (UserDetailData) -> Unit, failure: () -> Unit) {
-        val url = "${User.neteaseCloudMusicApi}/user/detail?uid=${userId}"
+        val url = "${Api.getDefaultApi()}/user/detail?uid=${userId}"
         MagicHttp.OkHttpManager().newGet(url, {
             try {
                 val userDetail = Gson().fromJson(it, UserDetailData::class.java)
@@ -71,7 +71,7 @@ class CloudMusicManager {
         success: (result: com.dirror.music.data.UserDetailData) -> Unit,
         failure: (error: String) -> Unit
     ) {
-        MagicHttp.OkHttpManager().newGet("${API_AUTU}/user/detail?uid=$uid", {
+        MagicHttp.OkHttpManager().newGet("${Api.getDefaultApi()}/user/detail?uid=$uid", {
             try {
                 val userDetailData = Gson().fromJson(it, com.dirror.music.data.UserDetailData::class.java)
                 when (userDetailData.code) {
