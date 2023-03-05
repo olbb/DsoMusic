@@ -126,7 +126,8 @@ object Api {
     }
 
     suspend fun getFromKuWo(song: StandardSongData, lossless: Boolean = false): StandardSongData? {
-        val songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
+        var songName = song.name?.replace(Regex("（.*）"), "")?.trim()?:""
+        songName = songName.replace(Regex("\\(.*\\)"), "").trim()
         val artistName = song.artists?.first()?.name
         searchFromKuwo("$songName $artistName", lossless)?.forEach { res ->
             if (res.name == song.name ||  (res.name != null && res.name?.contains(songName) == true && res.name?.contains("伴奏") == false)) {
@@ -274,11 +275,7 @@ object Api {
     fun getDefaultApi() :String {
         var api = User.neteaseCloudMusicApi
         if (api.isEmpty()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                api = "https://music.v2me.ml"
-            } else{
-                api = "http://music.v2me.ml"
-            }
+            api = "https://music.v2me.ml"
         }
         return api
     }

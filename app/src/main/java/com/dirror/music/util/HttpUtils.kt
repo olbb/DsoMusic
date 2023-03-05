@@ -3,6 +3,7 @@ package com.dirror.music.util
 import android.util.Log
 import com.dirror.music.App
 import com.dirror.music.util.cache.CommonCacheInterceptor
+import com.dirror.music.util.http.SSLTools.supportTLS
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ object HttpUtils {
         .readTimeout(5, TimeUnit.SECONDS)
         .writeTimeout(5, TimeUnit.SECONDS)
         .callTimeout(5, TimeUnit.SECONDS)
+        .supportTLS()
         .cache(cache)
         .addInterceptor(CommonCacheInterceptor())
         .build()

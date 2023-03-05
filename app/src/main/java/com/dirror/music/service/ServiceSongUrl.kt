@@ -58,16 +58,16 @@ object ServiceSongUrl {
                         }
                     } else {
                         var url = ""
-                        Api.getFromKuWo(song, true)?.let { kuwo ->
-                            Log.d(TAG, "search from kuwo get $kuwo")
-                            val res = SearchSong.getUrlKW(kuwo.id ?: "")
-                            url = res.url
-                            if (url.isNotEmpty()) {
-                                toast("替换酷我无损[${kuwo.name}-${getArtistName(kuwo.artists)}]成功")
-                                song.br = res.bitrateX
-                                song.type = res.format
-                            }
-                        }
+//                        Api.getFromKuWo(song, true)?.let { kuwo ->
+//                            Log.d(TAG, "search from kuwo get $kuwo")
+//                            val res = SearchSong.getUrlKW(kuwo.id ?: "")
+//                            url = res.url
+//                            if (url.isNotEmpty()) {
+//                                toast("替换酷我无损[${kuwo.name}-${getArtistName(kuwo.artists)}]成功")
+//                                song.br = res.bitrateX
+//                                song.type = res.format
+//                            }
+//                        }
                         if (url.isEmpty()) {
                             SongUrl.getSongUrlCookie(song.id ?: "") {
                                 success.invoke(it)
@@ -145,13 +145,14 @@ object ServiceSongUrl {
 
     suspend fun getUrlFromOther(song: StandardSongData): String {
         Api.getFromKuWo(song)?.apply {
-            SearchSong.getUrlKW(id?:"").let {
-                if (it.url.isNotEmpty()) {
-                    song.br = it.bitrateX
-                    song.type = it.format
-                    toast("换源到酷我[$name-${getArtistName(artists)}]成功")
-                }
-                return it.url
+            SearchSong.getUrl(id?:"").let {
+//                if (it.url.isNotEmpty()) {
+//                    song.br = it.bitrateX
+//                    song.type = it.format
+//                    toast("换源到酷我[$name-${getArtistName(artists)}]成功")
+//                }
+//                return it.url
+                return it
             }
         }
         Api.getFromQQ(song)?.apply {

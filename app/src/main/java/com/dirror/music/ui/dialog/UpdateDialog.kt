@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import com.dirror.music.R
 import com.dirror.music.databinding.DialogUpdateBinding
 import com.dirror.music.util.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class UpdateDialog(context: Context, private val updateData: UpdateUtil.UpdateData): Dialog(context, R.style.style_default_dialog) {
 
@@ -34,8 +36,6 @@ class UpdateDialog(context: Context, private val updateData: UpdateUtil.UpdateDa
         updateData.tagVersion?.let {
             if (getVisionCode() < it) {
                 toast("过低版本，请更新")
-                openUrlByBrowser(this.context, updateData.url)
-                binding.btnCancel.visibility = View.GONE
             }
         }
 
@@ -44,7 +44,8 @@ class UpdateDialog(context: Context, private val updateData: UpdateUtil.UpdateDa
         }
 
         binding.btnDownload.setOnClickListener {
-            openUrlByBrowser(this.context, updateData.url)
+            dismiss()
+            GlobalScope.launch {  UpdateUtil.downloadAndInstallApk(context, updateData.url) }
         }
     }
 

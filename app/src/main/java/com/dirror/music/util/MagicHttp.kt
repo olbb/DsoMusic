@@ -29,11 +29,11 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.dirror.music.util.cache.ACache
+import com.dirror.music.util.http.SSLTools.supportTLS
 import okhttp3.*
-import okhttp3.OkHttpClient
 import org.jetbrains.annotations.TestOnly
 import java.io.IOException
-import java.net.Proxy
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -97,6 +97,7 @@ object MagicHttp {
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(3, TimeUnit.SECONDS)
                     .writeTimeout(3, TimeUnit.SECONDS)
+                    .supportTLS()
                     .build()
                 val request = Request.Builder()
                     .url(url)
@@ -132,6 +133,7 @@ object MagicHttp {
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(3, TimeUnit.SECONDS)
                     .writeTimeout(3, TimeUnit.SECONDS)
+                    .supportTLS()
                     .build()
                 val request = Request.Builder()
                     .url(url)
@@ -170,6 +172,7 @@ object MagicHttp {
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(3, TimeUnit.SECONDS)
                     .writeTimeout(3, TimeUnit.SECONDS)
+                    .supportTLS()
                     .build()
 
                 val body: RequestBody = FormBody.Builder()
@@ -201,6 +204,7 @@ object MagicHttp {
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(3, TimeUnit.SECONDS)
                     .writeTimeout(3, TimeUnit.SECONDS)
+                    .supportTLS()
                     .build()
 
                 val request: Request = Request.Builder()
@@ -283,6 +287,7 @@ object MagicHttp {
                         .connectTimeout(5, TimeUnit.SECONDS)
                         .readTimeout(3, TimeUnit.SECONDS)
                         .writeTimeout(3, TimeUnit.SECONDS)
+                        .supportTLS()
                         .build()
                     val request = Request.Builder()
                         .url(url)
