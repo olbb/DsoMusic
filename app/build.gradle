@@ -11,7 +11,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     kotlinOptions {
-        jvmTarget = 1.8
+        jvmTarget = 11
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
 
@@ -26,8 +26,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.5"
-        kotlinCompilerVersion = "1.5.31"
+        kotlinCompilerExtensionVersion = "1.2.0-beta01"
     }
 
     defaultConfig {
