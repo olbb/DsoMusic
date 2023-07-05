@@ -34,6 +34,7 @@ class FloatWidgetHelper : LifecycleOwner {
     companion object {
         const val KEY_FLOAT_WIDGET_LOC_STR = "KEY_FLOAT_WIDGET_LOC_STR"
         const val TAG = "FloatWidgetHelper"
+        const val EMPTY_LYRIC = "[00:00.000]......"
         @SuppressLint("StaticFieldLeak")
         val Ins = FloatWidgetHelper()
     }
@@ -111,7 +112,12 @@ class FloatWidgetHelper : LifecycleOwner {
                 }
             }
             controller.getLyricEntryList().observe(this) {
-                lyricView?.setLyricEntryList(it)
+                Log.d(TAG, "setLyricEntryList:$it")
+                if (it.size > 0) {
+                    lyricView?.setLyricEntryList(it)
+                } else {
+                    lyricView?.loadLyric(EMPTY_LYRIC)
+                }
             }
             controller.getProgressLiveData().observe(this) {
                 updateProgress(it)
@@ -156,7 +162,7 @@ class FloatWidgetHelper : LifecycleOwner {
         icPlay = v.findViewById(R.id.float_play_status)
         lyricView = v.findViewById(R.id.lyricView)
         progressBar = v.findViewById(R.id.float_progress)
-        lyricView?.loadLyric("[00:00.000]......")
+        lyricView?.loadLyric(EMPTY_LYRIC)
 
         icLike?.setColorFilter(App.context.resources.getColor(R.color.float_widget_focus_color))
         icPlay?.setColorFilter(App.context.resources.getColor(R.color.float_widget_focus_color))
