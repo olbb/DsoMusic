@@ -14,6 +14,8 @@ import okhttp3.FormBody
 
 object SongUrl {
 
+    const val TAG = "SongUrl"
+
     val API = "${Api.getDefaultApi()}/song/url?id=33894312"
 
     fun getSongUrl(id: String): String {
@@ -47,9 +49,16 @@ object SongUrl {
     }
 
     suspend fun getSongUrlN(id: String): String {
-        val url = "${Api.getDefaultApi()}/song/url?id=$id"
-        val result = HttpUtils.get(url, SongUrlData::class.java)
-        return result?.data?.get(0)?.url ?: getSongUrl(id)
+        val url = "${Api.getDefaultApi()}/song/url?id=${id}"
+        val map = HashMap<String, String>()
+        map["crypto"] = "api"
+        map["cookie"] = AppConfig.cookie
+        map["withCredentials"] = "true"
+        map["realIP"] = App.realIP
+        map["id"] = id
+
+        val result = HttpUtils.post(url, map, SongUrlData::class.java)
+        return result?.data?.get(0)?.url ?: ""
     }
 
 }

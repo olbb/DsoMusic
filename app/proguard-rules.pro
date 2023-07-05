@@ -62,3 +62,18 @@
 -keep class tv.danmaku.ijk.media.player.** {*;}
 -keep class tv.danmaku.ijk.media.player.IjkMediaPlayer{*;}
 -keep class tv.danmaku.ijk.media.player.ffmpeg.FFmpegApi{*;}
+
+-keep class com.google.gson.reflect.TypeToken
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep public class * implements java.lang.reflect.Type
+-keep class kotlin.** { *; }
+-keep class kotlinx.** { *; }
+-keep class coil.** { *; }
+-keep class androidx.** { *; }
+
+-keep class **.R$* {
+ *;
+}
+
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable

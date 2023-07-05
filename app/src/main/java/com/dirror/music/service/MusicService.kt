@@ -148,6 +148,13 @@ class MusicService : BaseMediaService() {
                     }
                 }
             }
+            if (msg.what == MSG_UPDATE_PROGRESS) {
+                if (musicController.isPlaying().value == true) {
+                    musicController.updateProgress()
+                    removeMessages(MSG_UPDATE_PROGRESS)
+                    sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000L)
+                }
+            }
         }
     }
 
@@ -236,6 +243,8 @@ class MusicService : BaseMediaService() {
                 if (Rom.meizu) {
                     handler.sendEmptyMessageDelayed(MSG_STATUS_BAR_LYRIC, 300L)
                 }
+                handler.removeMessages(MSG_UPDATE_PROGRESS)
+                handler.sendEmptyMessageDelayed(MSG_UPDATE_PROGRESS, 1000L)
             }
 
             override fun onPause() {
@@ -344,6 +353,14 @@ class MusicService : BaseMediaService() {
         private var recoverProgress = 0
 
         private var songData = MutableLiveData<StandardSongData?>()
+
+        private var duration = MutableLiveData<Long>().also {
+            it.value = mediaPlayer.duration
+        }
+
+        private var progress = MutableLiveData<Long>().also {
+            it.value = mediaPlayer.currentPosition
+        }
 
         private val isSongPlaying = MutableLiveData<Boolean>().also {
             it.value = mediaPlayer.isPlaying
@@ -487,6 +504,7 @@ class MusicService : BaseMediaService() {
         override fun onPrepared(p0: IMediaPlayer?) {
             Log.i(TAG, "onPrepared")
             isPrepared = true
+            duration.value = mediaPlayer.duration
             this.play()
             if (recover) {
                 recover = false
@@ -804,6 +822,15 @@ class MusicService : BaseMediaService() {
         fun setTimingOffMode(newOne: Boolean) {
             timingOffMode = newOne
         }
+
+        fun updateProgress() {
+            progress.value = getProgress()
+        }
+
+        fun getProgressLiveData() = progress
+
+        fun getDurationLiveData() = duration
+
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
@@ -996,7 +1023,6 @@ class MusicService : BaseMediaService() {
                     .build()
             )
             song?.let {
-                FloatWidgetHelper.setPlayInfo(song)
                 try {
                     updateForLynkCo(song)
                 } catch (e:Throwable) {
@@ -1037,5 +1063,8 @@ class MusicService : BaseMediaService() {
         private const val MSG_STATUS_BAR_LYRIC = 0
 
         private const val MEDIA_SESSION_PLAYBACK_SPEED = 1f
+
+        /* 更新播放进度 */
+        private const val MSG_UPDATE_PROGRESS = 1001
     }
 }

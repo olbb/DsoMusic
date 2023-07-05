@@ -1,5 +1,7 @@
 package com.dirror.music.ui.dialog
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import com.dirror.music.App
 import com.dirror.music.R
 import com.dirror.music.adapter.PlaylistDialogAdapter
 import com.dirror.music.databinding.DialogPlayListBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class PlaylistDialog: BottomSheetDialogFragment() {
@@ -48,8 +52,22 @@ class PlaylistDialog: BottomSheetDialogFragment() {
         })
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return FixLandBottomDialog(requireContext(), theme)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+}
+
+class FixLandBottomDialog(ctx: Context, theme: Int): BottomSheetDialog(ctx, theme) {
+    override fun onStart() {
+        super.onStart()
+        //如果是横屏状态
+        if (context.resources.configuration.orientation == 2) {
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 }

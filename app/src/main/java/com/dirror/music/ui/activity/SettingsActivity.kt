@@ -188,7 +188,7 @@ class SettingsActivity : BaseActivity() {
 
             switcherShowFloatWidget.setOnCheckedChangeListener {
                 mmkv.encode(Config.FLOAT_PLAY_INFO, it)
-                FloatWidgetHelper.initWidget()
+                FloatWidgetHelper.Ins.initWidget()
             }
         }
     }

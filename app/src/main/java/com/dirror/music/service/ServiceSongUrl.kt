@@ -37,16 +37,10 @@ object ServiceSongUrl {
     }
 
     inline fun getUrl(song: StandardSongData, crossinline success: (Any?) -> Unit) {
-        PluginSupport.setSong(song)
-        val pluginUrl = PluginSupport.apply(PluginConstants.POINT_SONG_URL)
-        if (pluginUrl != null && pluginUrl is String) {
-            success.invoke(pluginUrl)
-            return
-        }
+        Log.i(TAG, "getUrl: ${song.name} + ${song.source}")
         when (song.source) {
             SOURCE_NETEASE -> {
                 GlobalScope.launch {
-                    Log.i(TAG, "current thread is:${Thread.currentThread()}" )
                     if (song.neteaseInfo?.pl == 0) {
                         if (App.mmkv.decodeBool(Config.AUTO_CHANGE_RESOURCE)) {
                             GlobalScope.launch {
@@ -69,8 +63,12 @@ object ServiceSongUrl {
 //                            }
 //                        }
                         if (url.isEmpty()) {
-                            SongUrl.getSongUrlCookie(song.id ?: "") {
-                                success.invoke(it)
+                            withContext(Dispatchers.IO) {
+                                val url = SongUrl.getSongUrlN(song.id ?: "")
+                                Log.i(TAG, "getUrl result: $url")
+                                withContext(Dispatchers.Main) {
+                                    success.invoke(url)
+                                }
                             }
                         } else {
                             withContext(Dispatchers.Main) {

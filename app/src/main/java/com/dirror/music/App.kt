@@ -94,7 +94,7 @@ class App : MultiDexApplication() {
                 realIP = ip
             }
         }
-        FloatWidgetHelper.initWidget()
+        FloatWidgetHelper.Ins.initWidget()
         Log.i(TAG, "onCreate finished")
     }
 

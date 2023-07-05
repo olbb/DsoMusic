@@ -44,6 +44,9 @@ class Android4Util {
                     }
                 }.start()
             }
+            menu.findViewById<View>(R.id.itemExitAct)?.setOnClickListener {
+                ActivityCollector.finishAll()
+            }
         }
     }
 

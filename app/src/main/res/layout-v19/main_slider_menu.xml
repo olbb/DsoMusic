@@ -138,6 +138,25 @@
 
         </com.dirror.music.widget.ItemLayout>
 
+        <com.dirror.music.widget.ItemLayout
+            android:id="@+id/itemExitAct"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:itemType="item_menu"
+            app:text="@string/exit_act">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="16dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_exit_app"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </com.dirror.music.widget.ItemLayout>
 
     </LinearLayout>
 </ScrollView>

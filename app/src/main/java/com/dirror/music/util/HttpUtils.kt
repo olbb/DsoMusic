@@ -27,11 +27,12 @@ object HttpUtils {
     private val cacheControl = CacheControl.Builder().build()
 
     private val gson = Gson()
+    private const val timeout = 10L
     private val client = OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
-        .writeTimeout(5, TimeUnit.SECONDS)
-        .callTimeout(5, TimeUnit.SECONDS)
+        .connectTimeout(timeout, TimeUnit.SECONDS)
+        .readTimeout(timeout, TimeUnit.SECONDS)
+        .writeTimeout(timeout, TimeUnit.SECONDS)
+        .callTimeout(timeout, TimeUnit.SECONDS)
         .supportTLS()
         .cache(cache)
         .addInterceptor(CommonCacheInterceptor())
