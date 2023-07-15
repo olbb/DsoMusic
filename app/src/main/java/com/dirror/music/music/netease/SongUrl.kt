@@ -48,7 +48,7 @@ object SongUrl {
         })
     }
 
-    suspend fun getSongUrlN(id: String): String {
+    suspend fun getSongUrlN(id: String): SongUrlData.UrlData? {
         val url = "${Api.getDefaultApi()}/song/url?id=${id}"
         val map = HashMap<String, String>()
         map["crypto"] = "api"
@@ -58,7 +58,7 @@ object SongUrl {
         map["id"] = id
 
         val result = HttpUtils.post(url, map, SongUrlData::class.java)
-        return result?.data?.get(0)?.url ?: ""
+        return result?.data?.get(0)
     }
 
 }

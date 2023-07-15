@@ -11,6 +11,7 @@ import com.dirror.music.music.dirror.SearchSong
 import com.dirror.music.music.standard.data.*
 import com.dirror.music.util.runOnMainThread
 import com.dso.ext.toSizeFormat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class SongInfoDialog(
@@ -25,6 +26,13 @@ class SongInfoDialog(
         window?.setGravity(Gravity.BOTTOM)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         window?.setWindowAnimations(R.style.dialog_animation)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (context.resources.configuration.orientation == 2) {
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +96,9 @@ class SongInfoDialog(
                 binding.valueViewSize.setValue(fileSize.toSizeFormat())
             }
             binding.valueViewType.setValue(type)
+            binding.valueViewSource.setValue("网易云音乐")
+            binding.valueViewType.setValue(type)
+            binding.valueViewData.setValue(App.musicController.value?.url?.value.toString())
         }
     }
 

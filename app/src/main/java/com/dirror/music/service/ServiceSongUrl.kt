@@ -64,10 +64,19 @@ object ServiceSongUrl {
 //                        }
                         if (url.isEmpty()) {
                             withContext(Dispatchers.IO) {
-                                val url = SongUrl.getSongUrlN(song.id ?: "")
-                                Log.i(TAG, "getUrl result: $url")
+                                val data = SongUrl.getSongUrlN(song.id ?: "")
+                                Log.i(TAG, "getUrl result: $data")
+                                song.source = SOURCE_NETEASE
+                                song.type = data?.type ?: "未知"
                                 withContext(Dispatchers.Main) {
-                                    success.invoke(url)
+                                    success.invoke(data?.url)
+                                }
+                                data?.url?.let {
+                                    try {
+                                        song.fileSize = HttpUtils.getRemoteFileSize(it)
+                                    } catch (t : Throwable) {
+                                        t.printStackTrace()
+                                    }
                                 }
                             }
                         } else {

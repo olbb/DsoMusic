@@ -1,14 +1,14 @@
 package com.dirror.music.util
 
 import android.net.Uri
-import android.os.Build
 import android.util.Log
+import com.dirror.music.App
 import com.dirror.music.api.CloudMusicApi
+import com.dirror.music.data.PlaylistDynamic
 import com.dirror.music.data.*
 import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
 import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
-import com.dirror.music.music.netease.Playlist
 import com.dirror.music.music.netease.data.CodeData
 import com.dirror.music.music.netease.data.LyricData
 import com.dirror.music.music.qq.SearchSong
@@ -266,6 +266,14 @@ object Api {
 
     suspend fun getUserInfo(cookie: String): NeteaseUserInfo? {
         return HttpUtils.post("${getLoginUrl()}/user/account", Utils.toMap("cookie", cookie) , NeteaseUserInfo::class.java)
+    }
+
+    suspend fun getPlaylistDynamicInfo(id: Long): PlaylistDynamic? {
+        return HttpUtils.post("${getLoginUrl()}/playlist/detail/dynamic?id=$id&realIp=${App.realIP}", Utils.toMap("cookie", AppConfig.cookie), PlaylistDynamic::class.java)
+    }
+
+    suspend fun getUserLikeList(uid: Long): UserLikeList? {
+        return HttpUtils.post("${getLoginUrl()}/likelist?uid=$uid&realIp=${App.realIP}", Utils.toMap("cookie", AppConfig.cookie), UserLikeList::class.java)
     }
 
     private fun getLoginUrl() :String {

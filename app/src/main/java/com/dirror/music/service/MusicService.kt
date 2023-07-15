@@ -372,6 +372,8 @@ class MusicService : BaseMediaService() {
         /* Song cover bitmap*/
         private val coverBitmap = MutableLiveData<Bitmap?>()
 
+        val url = MutableLiveData<Any>()
+
         /* 是否开启私人 FM 模式 */
         var personFM = MutableLiveData<Boolean>().also {
             it.value = mmkv.decodeBool(Config.PERSON_FM_MODE, false)
@@ -429,6 +431,7 @@ class MusicService : BaseMediaService() {
                             }
                             return@runOnMainThread
                         }
+                        url.value = it
                         when (it) {
                             is String -> {
                                 if (!InternetState.isWifi(context) && !mmkv.decodeBool(
@@ -510,6 +513,7 @@ class MusicService : BaseMediaService() {
                 recover = false
                 this.pause()
                 this.setProgress(0)
+                this.isSongPlaying.value = false
                 // this.setProgress(recoverProgress)
             }
             sendMusicBroadcast()

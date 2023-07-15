@@ -25,11 +25,19 @@
 package com.dirror.music.manager
 
 import android.os.Parcelable
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
+import com.dirror.music.App
 import com.dirror.music.App.Companion.mmkv
 import com.dirror.music.music.netease.data.UserDetailData
+import com.dirror.music.util.Api
 import com.dirror.music.util.AppConfig
 import com.dirror.music.util.Config
 import com.dirror.music.util.EMPTY
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 
 // @IgnoredOnParcel
@@ -46,7 +54,11 @@ private const val DEFAULT_VIP_TYPE = 0
  */
 object User {
 
+    val TAG = "User"
+
     val dsoUser: DsoUser = mmkv.decodeParcelable(Config.DSO_USER, DsoUser::class.java, DsoUser())!!
+
+    val userLikeData = MutableLiveData<List<Long>>()
 
     /** 用户 uid */
     var uid: Long = DEFAULT_UID
@@ -54,6 +66,7 @@ object User {
         set(value) {
             mmkv.encode(Config.UID, value)
             field = value
+            updateLikeList(value)
         }
 
     /** 用户 Cookie */
@@ -97,6 +110,16 @@ object User {
         return vipType != 0
     }
 
+    fun updateLikeList(it: Long) {
+        App.coroutineScope.launch(Dispatchers.IO) {
+            Api.getUserLikeList(it)?.apply {
+                withContext(Dispatchers.Main) {
+                    userLikeData.value = ids
+                    Log.d(TAG, "UserLikeData: $ids")
+                }
+            }
+        }
+    }
 }
 
 /**

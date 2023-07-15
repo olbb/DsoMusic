@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.dirror.lyricviewx.LyricViewX
 import com.dirror.music.App
 import com.dirror.music.R
+import com.dirror.music.manager.User
 import com.dirror.music.music.standard.data.SOURCE_NETEASE
 import com.dirror.music.music.standard.data.StandardSongData
 import com.dirror.music.ui.main.MainActivity
@@ -45,7 +46,6 @@ class FloatWidgetHelper : LifecycleOwner {
     private var progressBar: ProgressBar? = null
     private var lyricView: LyricViewX? = null
     private val lifecycleRegistry = LifecycleRegistry(this)
-    private var observerInit = false
 
 
     fun initWidget() {
@@ -73,17 +73,14 @@ class FloatWidgetHelper : LifecycleOwner {
                 }
                 show {
                     Log.d(TAG, "show")
-                    lifecycleRegistry.currentState = Lifecycle.State.RESUMED
-                    if (!observerInit) {
-                        initObserver()
-                    }
+                    setLifecycleState(Lifecycle.State.RESUMED)
                 }
                 hide {
                     Log.d(TAG, "hide")
-                    lifecycleRegistry.currentState = Lifecycle.State.STARTED
+                    setLifecycleState(Lifecycle.State.CREATED)
                 }
                 dismiss {
-                    lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+                    setLifecycleState(Lifecycle.State.DESTROYED)
                     title = null
                     lyricView = null
                     icLike = null
@@ -98,10 +95,11 @@ class FloatWidgetHelper : LifecycleOwner {
                 }
             }
             .show()
-        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        setLifecycleState(Lifecycle.State.CREATED)
     }
 
     private fun initObserver() {
+        Log.i(TAG, "initObserver, lifecycleRegistry.currentState: ${lifecycleRegistry.currentState}")
         App.musicController.value?.let { controller ->
             controller.isPlaying().observe(this) {
                 updatePlayStatus(it)
@@ -126,8 +124,20 @@ class FloatWidgetHelper : LifecycleOwner {
                 Log.d(TAG, "duration update: $it")
                 progressBar?.max = it.toInt()
             }
-            observerInit = true
+            User.userLikeData.observe(this) {
+                if (it != null) {
+                    val songId = controller.getPlayingSongData().value?.id?.toLong() ?: -1
+                    val liked = it.contains(songId)
+                    icLike?.setImageResource(if (liked) R.drawable.ic_player_heart else R.drawable.ic_player_heart_outline)
+                }
+            }
         }
+    }
+
+
+    private fun setLifecycleState(state: Lifecycle.State) {
+        lifecycleRegistry.currentState = state
+        Log.d(TAG, "setLifecycleState: $state")
     }
 
     private fun setPlayInfo(info: StandardSongData) {
@@ -171,12 +181,14 @@ class FloatWidgetHelper : LifecycleOwner {
             App.musicController.value?.getPlayingSongData()?.value?.let {
                 if (it.source == SOURCE_NETEASE) {
                     lifecycleScope.launch {
-                        Api.likeSong(true, it.id ?: "").let { codeData ->
+                        val liked = User.userLikeData.value?.contains(it.id?.toLong() ?: -1) ?: false
+                        Api.likeSong(!liked, it.id ?: "").let { codeData ->
                             withContext(Dispatchers.Main) {
                                 if (codeData?.code == 200) {
-                                    icLike?.setImageResource(R.drawable.ic_player_heart)
+                                    icLike?.setImageResource(if (liked) R.drawable.ic_player_heart_outline else R.drawable.ic_player_heart)
+                                    User.updateLikeList(User.uid)
                                 } else {
-                                    toast("添加到我喜欢失败")
+                                    toast(if (liked) "取消喜欢失败" else "喜欢失败")
                                 }
                             }
                         }
@@ -187,6 +199,7 @@ class FloatWidgetHelper : LifecycleOwner {
         icPlay?.setOnClickListener {
             App.musicController.value?.changePlayState()
         }
+        initObserver()
     }
 
     private fun updatePlayStatus(isPlaying: Boolean) {

@@ -67,7 +67,7 @@
             android:layout_height="match_parent"
             app:lrcCurrentTextColor="@color/float_widget_focus_color"
             app:lrcNormalTextColor="@color/float_widget_focus_color_secondly"
-            app:lrcTextSize="32sp"
+            app:lrcTextSize="28sp"
             app:lrcNormalTextSize="28sp"
             app:lrcPadding="0dp">
 
