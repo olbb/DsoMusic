@@ -134,6 +134,9 @@ class MusicService : BaseMediaService() {
     /* Live */
     private var liveLyricEntryList = MutableLiveData<ArrayList<LyricEntry>>(ArrayList())
 
+    private var retryIndex = 0
+    private val maxRetryCount = 3
+
     /* Handler */
     private val handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -426,11 +429,18 @@ class MusicService : BaseMediaService() {
                     runOnMainThread {
                         if (it == null || it is String && it.isEmpty()) {
                             if (playNext) {
-                                toast("当前歌曲不可用, 播放下一首")
-                                playNext()
+                                if (retryIndex < maxRetryCount) {
+                                    toast("当前歌曲不可用, 播放下一首")
+                                    retryIndex ++
+                                    playNext()
+                                } else {
+                                    Log.e(TAG, "playMusic: 已达到最大重试次数")
+                                    toast("已达到最大重试次数")
+                                }
                             }
                             return@runOnMainThread
                         }
+                        retryIndex = 0
                         url.value = it
                         when (it) {
                             is String -> {

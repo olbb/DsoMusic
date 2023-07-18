@@ -37,6 +37,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.multidex.MultiDexApplication
 import com.dirror.music.manager.ActivityManager
 import com.dirror.music.manager.CloudMusicManager
+import com.dirror.music.manager.User
 import com.dirror.music.room.AppDatabase
 import com.dirror.music.service.MusicService
 import com.dirror.music.service.MusicServiceConnection
@@ -95,6 +96,7 @@ class App : MultiDexApplication() {
             }
         }
         FloatWidgetHelper.Ins.initWidget()
+        User.uid = mmkv.decodeLong(Config.UID, 0)
         Log.i(TAG, "onCreate finished")
     }
 

@@ -3,17 +3,23 @@ package com.dirror.music.ui.player
 import android.graphics.Color
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dirror.music.App
 import com.dirror.music.audio.VolumeManager
 import com.dirror.music.data.LyricViewData
-import com.dirror.music.music.local.MyFavorite
+import com.dirror.music.manager.User
 import com.dirror.music.music.standard.SearchLyric
 import com.dirror.music.music.standard.data.SOURCE_NETEASE
 import com.dirror.music.service.base.BaseMediaService
+import com.dirror.music.util.Api
 import com.dirror.music.util.Config
 import com.dirror.music.util.runOnMainThread
+import com.dirror.music.util.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * PlayerActivity ViewModel
@@ -142,17 +148,22 @@ class PlayerViewModel: ViewModel() {
      * true
      */
     fun likeMusic(success: (Boolean) -> Unit) {
-        App.musicController.value?.getPlayingSongData()?.value?.let {
-            MyFavorite.isExist(it) { exist ->
-                if (exist) {
-                    MyFavorite.deleteById(it.id?:"")
-                    success.invoke(false)
-                } else {
-                    MyFavorite.addSong(it)
-                    success.invoke(true)
+        App.coroutineScope.launch(Dispatchers.IO) {
+            App.musicController.value?.getPlayingSongData()?.value?.let {
+                val liked = User.userLikeData.value?.contains(it.id?.toLong() ?: -1) ?: false
+                Api.likeSong(!liked, it.id ?: "").let { codeData ->
+                    withContext(Dispatchers.Main) {
+                        if (codeData?.code == 200) {
+                            User.updateLikeList(User.uid)
+                            success(!liked)
+                        } else {
+                            toast(if (liked) "取消喜欢失败" else "喜欢失败")
+                            success(liked)
+                        }
+                    }
                 }
             }
-        }
+            }
     }
 
     /**

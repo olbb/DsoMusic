@@ -47,6 +47,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import coil.load
 import coil.size.ViewSizeResolver
@@ -57,6 +58,7 @@ import com.dirror.music.App
 import com.dirror.music.R
 import com.dirror.music.audio.VolumeManager
 import com.dirror.music.databinding.ActivityPlayerBinding
+import com.dirror.music.manager.User
 import com.dirror.music.music.local.MyFavorite
 import com.dirror.music.music.standard.data.SOURCE_LOCAL
 import com.dirror.music.music.standard.data.SOURCE_NETEASE
@@ -397,11 +399,16 @@ class PlayerActivity : SlideBackActivity() {
                         // 刷新歌词
                         playViewModel.updateLyric()
                         // 是否有红心
-                        MyFavorite.isExist(it) { exist ->
-                            runOnMainThread {
-                                playViewModel.heart.value = exist
+                        if (it.source == SOURCE_NETEASE && User.hasCookie) {
+                           playViewModel.heart.value = User.userLikeData.value?.contains(it.id?.toLong()) == true
+                        } else {
+                            MyFavorite.isExist(it) { exist ->
+                                runOnMainThread {
+                                    playViewModel.heart.value = exist
+                                }
                             }
                         }
+
                     }
                 })
                 // 封面观察

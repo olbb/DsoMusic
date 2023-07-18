@@ -273,7 +273,7 @@ object Api {
     }
 
     suspend fun getUserLikeList(uid: Long): UserLikeList? {
-        return HttpUtils.post("${getLoginUrl()}/likelist?uid=$uid&realIp=${App.realIP}", Utils.toMap("cookie", AppConfig.cookie), UserLikeList::class.java)
+        return HttpUtils.post("${getLoginUrl()}/likelist?uid=$uid&realIp=${App.realIP}&timestamp=${Date().time}", Utils.toMap("cookie", AppConfig.cookie), UserLikeList::class.java)
     }
 
     private fun getLoginUrl() :String {

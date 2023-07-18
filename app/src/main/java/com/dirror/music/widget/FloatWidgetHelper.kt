@@ -95,7 +95,7 @@ class FloatWidgetHelper : LifecycleOwner {
                 }
             }
             .show()
-        setLifecycleState(Lifecycle.State.CREATED)
+        setLifecycleState(Lifecycle.State.STARTED)
     }
 
     private fun initObserver() {
