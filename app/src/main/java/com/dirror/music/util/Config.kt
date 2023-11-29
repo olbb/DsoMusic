@@ -124,4 +124,7 @@ object Config {
 
     //是否更新仪表盘
     const val BIND_LYNKCO_SERVICE = "bind_lynkco_service"
+
+    //音乐音量
+    const val PLAYER_VOLUME = "player_volume"
 }

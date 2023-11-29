@@ -9,6 +9,7 @@ import com.dirror.music.data.*
 import com.dirror.music.manager.User
 import com.dirror.music.music.compat.CompatSearchData
 import com.dirror.music.music.compat.compatSearchDataToStandardPlaylistData
+import com.dirror.music.music.netease.SimiPlaylistResponse
 import com.dirror.music.music.netease.data.CodeData
 import com.dirror.music.music.netease.data.LyricData
 import com.dirror.music.music.qq.SearchSong
@@ -89,6 +90,11 @@ object Api {
         val url = "${getDefaultApi()}/cloudsearch?keywords=$keyword&limit=100&type=${SearchType.getSearchTypeInt(type)}"
         val result = HttpUtils.get(url, NeteaseSearchResult::class.java)
         return result?.result?.toStandardResult()
+    }
+
+    suspend fun getSimiPlayList(id: String): SimiPlaylistResponse? {
+        val url = "${getDefaultApi()}/simi/playlist?id=$id"
+        return HttpUtils.get(url, SimiPlaylistResponse::class.java)
     }
 
     suspend fun getAlbumSongs(id:Long): StandardAlbumPackage? {

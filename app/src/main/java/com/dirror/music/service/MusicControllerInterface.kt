@@ -177,4 +177,9 @@ interface MusicControllerInterface {
      */
     fun setPersonFM(open: Boolean)
 
+    /**
+     * 设置音量
+     */
+    fun setVolume(volume: Float)
+
 }

@@ -47,11 +47,14 @@ class MorePlayListActivity : BaseActivity() {
 
     override fun initData() {
         super.initData()
-        intent.getStringExtra(EXTRA_SONG_NAME)?.let {
+        intent.getStringExtra(EXTRA_SONG_ID)?.let {
             GlobalScope.launch {
-                Api.searchMusic(it, SearchType.PLAYLIST)?.playlist?.let {
+                Api.getSimiPlayList(it)?.playlists?.let {
+                    val list = it.map { playlist ->
+                        playlist.switchToStandSearchPlaylist()
+                    }
                     withContext(Dispatchers.Main) {
-                        initPlaylist(it)
+                        initPlaylist(list)
                     }
                 }
             }

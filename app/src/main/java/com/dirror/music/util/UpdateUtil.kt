@@ -12,7 +12,6 @@ import androidx.core.content.FileProvider
 import com.dirror.music.ui.dialog.UpdateDialog
 import com.dirror.music.util.http.SSLTools.supportTLS
 import com.google.gson.Gson
-import com.umeng.commonsdk.statistics.SdkVersion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -65,7 +64,7 @@ object UpdateUtil {
      * 检查服务器版本
      */
     private fun getServerVersion(success: (UpdateData) -> Unit, failure: () -> Unit) {
-        val url = "https://catfun.ml/tools/check_up.json"
+        val url = "https://blog.meimi.me/tools/check_up.json"
         MagicHttp.OkHttpManager().newGet(url, {
             // 成功
             try {

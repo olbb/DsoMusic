@@ -145,7 +145,10 @@ class FloatWidgetHelper : LifecycleOwner {
         val art = if (info.artists != null) getSingerList(info.artists!!) else ""
         val titleStr = "${info.name}${if (art.isNotEmpty()) " - $art" else ""}"
         title?.text = titleStr
-        icLike?.setImageResource(R.drawable.ic_player_heart_outline)
+        val songId = info.id?.toLong() ?: -1
+        val liked = User.userLikeData.value?.contains(songId) ?: false
+        icLike?.setImageResource(if (liked) R.drawable.ic_player_heart else R.drawable.ic_player_heart_outline)
+
     }
 
     private fun updateProgress(pr : Long) {

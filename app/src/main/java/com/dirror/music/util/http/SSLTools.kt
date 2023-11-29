@@ -1,6 +1,7 @@
 package com.dirror.music.util.http
 
 import android.os.Build
+import android.util.Log
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
@@ -16,25 +17,41 @@ import javax.net.ssl.X509TrustManager
  */
 object SSLTools {
 
-    private lateinit var chiperes: List<ConnectionSpec>
+    private val chiperes: List<ConnectionSpec> by lazy {
+        listOf(
+            ConnectionSpec.RESTRICTED_TLS,
+            ConnectionSpec.COMPATIBLE_TLS,
+            ConnectionSpec.MODERN_TLS,
+            ConnectionSpec.CLEARTEXT // Support Http
+        )
+    }
 
-    private lateinit var tm: X509TrustManager
+    private val tm: X509TrustManager by lazy {
+        Conscrypt.getDefaultX509TrustManager()
+    }
 
     // Init Conscrypt
-    private lateinit var conscrypt: Provider
-    private lateinit var sslContext: SSLContext
+    private val conscrypt: Provider by lazy {
+        Conscrypt.newProvider()
+    }
 
-    private var inited = false
+    private val sslContext: SSLContext by lazy {
+        Log.i(TAG, "init started")
+        val context = SSLContext.getInstance("TLS", conscrypt)
+        // Add as provider
+        Security.insertProviderAt(conscrypt, 1)
+        context.init(null, arrayOf<TrustManager>(tm), null)
+        Log.i(TAG, "init finished")
+        context
+    }
+
+    const val TAG = "SSLTools"
 
     fun OkHttpClient.Builder.supportTLS():OkHttpClient.Builder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             return this
         }
-        if (!inited) {
-            synchronized(this) {
-                initIfNeed()
-            }
-        }
+        Log.d(TAG, "set supportTLS")
         connectionSpecs(chiperes)
         sslSocketFactory(
             InternalSSLSocketFactory(sslContext.socketFactory),
@@ -42,27 +59,4 @@ object SSLTools {
         )
         return  this
     }
-
-
-    private fun initIfNeed() {
-        chiperes = listOf(
-            ConnectionSpec.RESTRICTED_TLS,
-            ConnectionSpec.COMPATIBLE_TLS,
-            ConnectionSpec.MODERN_TLS,
-            ConnectionSpec.CLEARTEXT // Support Http
-        )
-        try {
-            tm = Conscrypt.getDefaultX509TrustManager()
-            conscrypt = Conscrypt.newProvider()
-            sslContext = SSLContext.getInstance("TLS", conscrypt)
-            // Add as provider
-            Security.insertProviderAt(conscrypt, 1)
-            sslContext.init(null, arrayOf<TrustManager>(tm), null)
-            inited = true
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-    }
-
-
 }

@@ -55,4 +55,31 @@
             app:srcCompat="@drawable/ic_baseline_remove_circle_24" />
     </com.dirror.music.widget.ItemLayout>
 
+    <com.dirror.music.widget.ItemLayout
+        android:id="@+id/itemVolume"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:itemType="item_no"
+        app:text="@string/player_volume">
+
+        <SeekBar
+            android:id="@+id/itemVolumeSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
+            android:progressDrawable="@drawable/background_seek_bar_music_big"
+            android:splitTrack="false"
+            android:thumb="@drawable/background_seek_bar_thumb_big"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="88dp"
+            app:layout_goneMarginEnd="16dp"/>
+
+    </com.dirror.music.widget.ItemLayout>
+
 </LinearLayout>

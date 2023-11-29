@@ -107,7 +107,7 @@ class PlayerMenuMoreDialog(context: Context) : BaseBottomSheetDialog(context) {
                 }
                 itemSearchPlayList.setOnClickListener { view ->
                     val intent = Intent(view.context, MorePlayListActivity::class.java)
-//                    intent.putExtra(MorePlayListActivity.EXTRA_SONG_ID, it.id)
+                    intent.putExtra(MorePlayListActivity.EXTRA_SONG_ID, it.id)
                     intent.putExtra(MorePlayListActivity.EXTRA_SONG_NAME, it.name)
                     view.context.startActivity(intent)
                 }

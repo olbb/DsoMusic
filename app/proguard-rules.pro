@@ -68,6 +68,7 @@
 -keep public class * implements java.lang.reflect.Type
 -keep class kotlin.coroutines.** {*;}
 -keep class kotlinx.coroutines.** {*;}
+-keep class coil.intercept.** {*;}
 
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable

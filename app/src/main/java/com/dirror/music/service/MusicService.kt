@@ -407,6 +407,11 @@ class MusicService : BaseMediaService() {
             }
         }
 
+        override fun setVolume(volume: Float) {
+            mediaPlayer.setVolume(volume, volume)
+            Log.d(TAG, "setVolume: $volume")
+        }
+
         override fun setPlaylist(songListData: ArrayList<StandardSongData>) {
             PlayQueue.setNormal(songListData)
             if (mode == MODE_RANDOM && !recover) {
@@ -518,6 +523,8 @@ class MusicService : BaseMediaService() {
             Log.i(TAG, "onPrepared")
             isPrepared = true
             duration.value = mediaPlayer.duration
+            val volume = mmkv.decodeFloat(Config.PLAYER_VOLUME, 1.0f)
+            mediaPlayer.setVolume(volume, volume)
             this.play()
             if (recover) {
                 recover = false
@@ -910,8 +917,10 @@ class MusicService : BaseMediaService() {
             song?.let {
                 updateForLynkCo(song)
             }
-            runOnMainThread {
-                showNotification(fromLyric, song, bitmap)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                runOnMainThread {
+                    showNotification(fromLyric, song, bitmap)
+                }
             }
         }
     }
