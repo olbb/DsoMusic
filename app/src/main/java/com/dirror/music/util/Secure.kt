@@ -34,21 +34,6 @@ object Secure {
      * 是否安全
      */
     fun isSecure(): Boolean {
-        if (isDebug()) {
-            // toast("DEBUG 模式")
-            if (SKIP_DEBUG_MODE) {
-                // toast("跳过安全检查")
-                return true
-            }
-        }
-        // 签名错误
-        if (!isSignatureCorrect()) {
-            return false
-        }
-        // 检查抓包
-        if (!checkProxy()) {
-            return false
-        }
 
         return true
     }

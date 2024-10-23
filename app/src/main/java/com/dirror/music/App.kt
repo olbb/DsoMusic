@@ -44,8 +44,7 @@ import com.dirror.music.service.MusicServiceConnection
 import com.dirror.music.util.*
 import com.dirror.music.widget.FloatWidgetHelper
 import com.tencent.mmkv.MMKV
-import com.umeng.analytics.MobclickAgent
-import com.umeng.commonsdk.UMConfigure
+
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
@@ -105,10 +104,6 @@ class App : MultiDexApplication() {
      */
     private fun checkSecure() {
         if (Secure.isSecure()) {
-            // 初始化友盟
-            UMConfigure.init(context, UM_APP_KEY, "", UMConfigure.DEVICE_TYPE_PHONE, "")
-            // 选用 AUTO 页面采集模式
-            MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
             // 开启音乐服务
             startMusicService()
         } else {
