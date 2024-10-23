@@ -289,7 +289,7 @@ object Api {
     fun getDefaultApi() :String {
         var api = User.neteaseCloudMusicApi
         if (api.isEmpty()) {
-            api = "https://music.meimi.me"
+            api = "https://music.baozi.lol"
         }
         return api
     }

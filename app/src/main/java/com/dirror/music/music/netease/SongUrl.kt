@@ -5,10 +5,8 @@ import com.dirror.music.App
 import com.dirror.music.manager.User
 import com.dirror.music.music.dirror.SearchSong
 import com.dirror.music.music.netease.data.SongUrlData
-import com.dirror.music.util.Api
-import com.dirror.music.util.AppConfig
-import com.dirror.music.util.HttpUtils
-import com.dirror.music.util.MagicHttp
+import com.dirror.music.ui.activity.SettingsActivity
+import com.dirror.music.util.*
 import com.google.gson.Gson
 import okhttp3.FormBody
 
@@ -49,7 +47,9 @@ object SongUrl {
     }
 
     suspend fun getSongUrlN(id: String): SongUrlData.UrlData? {
-        val url = "${Api.getDefaultApi()}/song/url?id=${id}"
+        val level = App.mmkv.decodeString(Config.MUSIC_LEVEL, SettingsActivity.MUSIC_LEVEL[0])
+
+        val url = "${Api.getDefaultApi()}/song/url/v1?id=${id}&level=${level}"
         val map = HashMap<String, String>()
         map["crypto"] = "api"
         map["cookie"] = AppConfig.cookie

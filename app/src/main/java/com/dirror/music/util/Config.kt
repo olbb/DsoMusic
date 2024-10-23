@@ -127,4 +127,7 @@ object Config {
 
     //音乐音量
     const val PLAYER_VOLUME = "player_volume"
+
+    //音乐音质
+    const val MUSIC_LEVEL = "music_level"
 }

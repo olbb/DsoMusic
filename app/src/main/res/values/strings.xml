@@ -139,4 +139,17 @@
     <string name="search_playlist_include_song">包含这首歌的歌单</string>
     <string name="bind_lynkco_service">更新LynkCo仪表盘</string>
     <string name="player_volume">音量</string>
+    
+    <array name="level_list">
+        <!--standard => 标准,higher => 较高, exhigh=>极高, lossless=>无损, hires=>Hi-Res, jyeffect => 高清环绕声, sky => 沉浸环绕声, dolby => 杜比全景声, jymaster => 超清母带 -->
+        <item>标准</item>
+        <item>较高</item>
+        <item>极高</item>
+        <item>无损</item>
+        <item>Hi-Res</item>
+        <item>高清环绕声</item>
+        <item>沉浸环绕声</item>
+        <item>杜比全景声</item>
+        <item>超清母带</item>
+    </array>
 </resources>

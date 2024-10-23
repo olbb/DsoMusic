@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Build
 import android.provider.MediaStore
 import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import com.dirror.music.App.Companion.mmkv
 import com.dirror.music.App.Companion.musicController
 import com.dirror.music.databinding.ActivitySettingsBinding
@@ -26,6 +28,18 @@ class SettingsActivity : BaseActivity() {
 
     companion object {
         const val ACTION = "com.dirror.music.SETTINGS_CHANGE"
+
+        //standard => 标准,higher => 较高, exhigh=>极高, lossless=>无损, hires=>Hi-Res,
+        //jyeffect => 高清环绕声, sky => 沉浸环绕声, dolby => 杜比全景声, jymaster => 超清母带
+        val MUSIC_LEVEL = arrayOf(
+            "standard", "higher", "exhigh", "lossless", "hires",
+            "jyeffect", "sky", "dolby", "jymaster"
+        )
+        val MUSIC_LEVEL_STR = arrayOf(
+            "标准", "极高", "无损", "Hi-Res",
+            "高清环绕声", "沉浸环绕声", "杜比全景声", "超清母带"
+        )
+
     }
 
     private lateinit var binding: ActivitySettingsBinding
@@ -83,6 +97,11 @@ class SettingsActivity : BaseActivity() {
             switchStartOnBootUp.setChecked(mmkv.decodeBool(Config.AUTO_START_ON_BOOT_UP, false))
             switcherShowFloatWidget.setChecked(mmkv.decodeBool(Config.FLOAT_PLAY_INFO), false)
             switcherBindLynkcoService.setChecked(mmkv.decodeBool(Config.BIND_LYNKCO_SERVICE), false)
+            val level = mmkv.decodeString(Config.MUSIC_LEVEL)
+            val levelIndex = MUSIC_LEVEL.indexOf(level)
+            if (levelIndex >= 0) {
+                spinnerLevel.setSelection(levelIndex)
+            }
         }
 
     }
@@ -190,6 +209,24 @@ class SettingsActivity : BaseActivity() {
                 mmkv.encode(Config.FLOAT_PLAY_INFO, it)
                 FloatWidgetHelper.Ins.initWidget()
             }
+            spinnerLevel.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+//                // 获取选中的元素
+//                val selectedItem = parent?.getItemAtPosition(position).toString()
+//                println("Selected item: $selectedItem")
+                mmkv.encode(Config.MUSIC_LEVEL, MUSIC_LEVEL[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // 当没有任何选项被选中时触发
+//                println("Nothing selected")
+            }
+        }
         }
     }
 
